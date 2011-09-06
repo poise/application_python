@@ -1,6 +1,6 @@
 #
 # Author:: Noah Kantrowitz <noah@opscode.com>
-# Cookbook Name:: application_django
+# Cookbook Name:: application_python
 # Provider:: django
 #
 # Copyright:: 2011, Opscode, Inc <legal@opscode.com>
