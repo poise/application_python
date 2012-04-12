@@ -22,8 +22,10 @@ include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
 
-  include_recipe "gunicorn"
   include_recipe "supervisor"
+
+  django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
+  gunicorn_install :virtualenv => django_resource.nil? ? nil : django_resource.virtualenv
 
   if !new_resource.restart_command
     new_resource.restart_command do
