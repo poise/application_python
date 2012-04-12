@@ -33,35 +33,9 @@ end
 
 action :before_deploy do
 
-  python_virtualenv new_resource.virtualenv do
-    path new_resource.virtualenv
-    action :create
-  end
+  install_packages
 
-  new_resource.packages.each do |name, ver|
-    python_pip name do
-      version ver if ver && ver.length > 0
-      virtualenv new_resource.virtualenv
-      action :install
-    end
-  end
-
-  dbm = new_resource.find_matching_role(new_resource.database_master_role)
-  Chef::Log.warn("No node with role #{new_resource.database_master_role}") if new_resource.database_master_role && !dbm
-
-  template "#{new_resource.path}/shared/#{new_resource.local_settings_base}" do
-    source new_resource.settings_template || "settings.py.erb"
-    cookbook new_resource.settings_template ? new_resource.cookbook_name : "application_django"
-    owner new_resource.owner
-    group new_resource.group
-    mode "644"
-    variables new_resource.settings.clone
-    variables.update :debug => new_resource.debug, :database => {
-      :host => (dbm.attribute?('cloud') ? dbm['cloud']['local_ipv4'] : dbm['ipaddress']),
-      :settings => new_resource.database,
-      :legacy => new_resource.legacy_database_settings
-    }
-  end
+  created_settings_file
 
 end
 
@@ -118,3 +92,38 @@ end
 action :after_restart do
 end
 
+protected
+
+def install_packages
+  python_virtualenv new_resource.virtualenv do
+    path new_resource.virtualenv
+    action :create
+  end
+
+  new_resource.packages.each do |name, ver|
+    python_pip name do
+      version ver if ver && ver.length > 0
+      virtualenv new_resource.virtualenv
+      action :install
+    end
+  end
+end
+
+def created_settings_file
+  dbm = new_resource.find_matching_role(new_resource.database_master_role)
+  Chef::Log.warn("No node with role #{new_resource.database_master_role}") if new_resource.database_master_role && !dbm
+
+  template "#{new_resource.path}/shared/#{new_resource.local_settings_base}" do
+    source new_resource.settings_template || "settings.py.erb"
+    cookbook new_resource.settings_template ? new_resource.cookbook_name : "application_django"
+    owner new_resource.owner
+    group new_resource.group
+    mode "644"
+    variables new_resource.settings.clone
+    variables.update :debug => new_resource.debug, :database => {
+      :host => (dbm.attribute?('cloud') ? dbm['cloud']['local_ipv4'] : dbm['ipaddress']),
+      :settings => new_resource.database,
+      :legacy => new_resource.legacy_database_settings
+    }
+  end
+end
