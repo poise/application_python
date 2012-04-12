@@ -110,8 +110,7 @@ def install_packages
 end
 
 def created_settings_file
-  dbm = new_resource.find_matching_role(new_resource.database_master_role)
-  Chef::Log.warn("No node with role #{new_resource.database_master_role}") if new_resource.database_master_role && !dbm
+  host = new_resource.find_database_server(new_resource.database_master_role)
 
   template "#{new_resource.path}/shared/#{new_resource.local_settings_base}" do
     source new_resource.settings_template || "settings.py.erb"
@@ -121,7 +120,7 @@ def created_settings_file
     mode "644"
     variables new_resource.settings.clone
     variables.update :debug => new_resource.debug, :database => {
-      :host => (dbm.attribute?('cloud') ? dbm['cloud']['local_ipv4'] : dbm['ipaddress']),
+      :host => host,
       :settings => new_resource.database,
       :legacy => new_resource.legacy_database_settings
     }
