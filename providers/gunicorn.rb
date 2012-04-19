@@ -25,7 +25,9 @@ action :before_compile do
   include_recipe "supervisor"
 
   django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
-  gunicorn_install :virtualenv => django_resource.nil? ? nil : django_resource.virtualenv
+  gunicorn_install "gunicorn-#{new_resource.application.name}" do
+    virtualenv django_resource ? django_resource.virtualenv : nil
+  end
 
   if !new_resource.restart_command
     new_resource.restart_command do
