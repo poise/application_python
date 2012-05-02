@@ -24,8 +24,6 @@ The following Opscode cookbooks are dependencies:
 * gunicorn
 * supervisor
 
-IMPORTANT: at the moment this cookbook depends on changes to the gunicorn cookbook that are not yet available on the community site. Please use https://github.com/jtimberman/gunicorn/tree/COOK-1188-lwrp instead.
-
 Resources/Providers
 ==========
 
