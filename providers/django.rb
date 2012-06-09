@@ -24,10 +24,10 @@ action :before_compile do
 
   include_recipe 'python'
 
-  new_resource.migration_command "#{py_cmd(new_resource)} manage.py syncdb --migrate --noinput" if !new_resource.migration_command
+  new_resource.migration_command "cd #{new_resource.base_django_app_path} ; #{manage_py_cmd(new_resource)} syncdb --migrate --noinput" if !new_resource.migration_command
 
   new_resource.symlink_before_migrate.update({
-    new_resource.local_settings_base => new_resource.local_settings_file,
+    new_resource.local_settings_base => ::File.join( new_resource.base_django_app_path, new_resource.local_settings_file )
   })
 end
 
@@ -56,7 +56,7 @@ action :before_migrate do
   if new_resource.requirements
     Chef::Log.info("Installing using requirements file: #{new_resource.requirements}")
     execute "#{pip_cmd(new_resource)} install -r #{new_resource.requirements}" do
-      cwd new_resource.release_path
+      cwd django_app_folder( new_resource )
     end
   else
     Chef::Log.debug("No requirements file found")
@@ -68,10 +68,10 @@ action :before_symlink do
 
   if new_resource.collectstatic
     cmd = new_resource.collectstatic.is_a?(String) ? new_resource.collectstatic : "collectstatic --noinput"
-    execute "#{py_cmd(new_resource)} manage.py #{cmd}" do
+    execute "#{manage_py_cmd(new_resource)} #{cmd}" do
       user new_resource.owner
       group new_resource.group
-      cwd new_resource.release_path
+      cwd django_app_folder( new_resource )
     end
   end
 
@@ -131,6 +131,10 @@ def pip_cmd(nr)
   ::File.join( nr.virtualenv, '/bin/pip' )
 end
 
-def py_cmd(nr)
-  ::File.join( nr.virtualenv, '/bin/python' )
+def manage_py_cmd(nr)
+  "#{::File.join( nr.virtualenv, '/bin/python' )} manage.py"
+end
+
+def django_app_folder(nr)
+  "#{::File.join( nr.release_path, nr.base_django_app_path )}"
 end
