@@ -87,6 +87,40 @@ action :before_symlink do
 end
 
 action :before_restart do
+
+  additional_fixtures_path = ::File.join( new_resource.release_path, "additional_fixtures" )
+
+  directory "django::additional_fixtures" do
+    path additional_fixtures_path
+    user new_resource.owner
+    group new_resource.group
+    mode "0775"
+  end
+
+  new_resource.additional_fixtures.each do |fixture_path|
+    directory "django::additional_fixtures::#{fixture_path}" do
+      path ::File.dirname( "#{additional_fixtures_path}/#{fixture_path}" )
+      recursive true
+      user new_resource.owner
+      group new_resource.group
+      mode "0775"
+    end
+
+    cookbook_file "django::additional_fixtures::#{fixture_path}" do
+      cookbook new_resource.fixture_cookbook
+      source fixture_path
+      path "#{additional_fixtures_path}/#{fixture_path}"
+      user new_resource.owner
+      group new_resource.group
+      mode "0775"
+    end
+
+    execute "django::additional_fixtures::#{fixture_path}" do
+      cwd django_app_folder( new_resource )
+      command "#{manage_py_cmd(new_resource)} loaddata #{additional_fixtures_path}/#{fixture_path}"
+    end
+  end
+
 end
 
 action :after_restart do
@@ -136,5 +170,5 @@ def manage_py_cmd(nr)
 end
 
 def django_app_folder(nr)
-  "#{::File.join( nr.release_path, nr.base_django_app_path )}"
+  ::File.join( nr.release_path, nr.base_django_app_path )
 end
