@@ -97,27 +97,45 @@ action :before_restart do
     mode "0775"
   end
 
-  new_resource.additional_fixtures.each do |fixture_path|
-    directory "django::additional_fixtures::#{fixture_path}" do
-      path ::File.dirname( "#{additional_fixtures_path}/#{fixture_path}" )
+  new_resource.additional_fixtures.each do |fixture|
+    directory "django::additional_fixtures::#{fixture[:path]}" do
+      path ::File.dirname( "#{additional_fixtures_path}/#{fixture[:path]}" )
       recursive true
       user new_resource.owner
       group new_resource.group
       mode "0775"
     end
 
-    cookbook_file "django::additional_fixtures::#{fixture_path}" do
-      cookbook new_resource.fixture_cookbook
-      source fixture_path
-      path "#{additional_fixtures_path}/#{fixture_path}"
-      user new_resource.owner
-      group new_resource.group
-      mode "0775"
+    case fixture[:type]
+      when "cookbook_file"
+        cookbook_file "django::additional_fixtures::#{fixture[:path]}" do
+          cookbook new_resource.fixture_cookbook
+          source fixture[:path]
+          path "#{additional_fixtures_path}/#{fixture[:path]}"
+          user new_resource.owner
+          group new_resource.group
+          mode "0775"
+        end
+
+      when "template"
+        template "django::additional_fixtures::#{fixture[:path]}" do
+          cookbook new_resource.fixture_cookbook
+          source "#{fixture[:path]}.erb"
+          path "#{additional_fixtures_path}/#{fixture[:path]}"
+          variables fixture[:variables]
+          user new_resource.owner
+          group new_resource.group
+          mode "0775"
+        end
+
+      else
+        raise NotImplementedError, "#{fixture[:type]} not yet supported"
+
     end
 
-    execute "django::additional_fixtures::#{fixture_path}" do
+    execute "django::additional_fixtures::#{fixture[:path]}" do
       cwd django_app_folder( new_resource )
-      command "#{manage_py_cmd(new_resource)} loaddata #{additional_fixtures_path}/#{fixture_path}"
+      command "#{manage_py_cmd( new_resource )} loaddata #{additional_fixtures_path}/#{fixture[:path]}"
     end
   end
 
