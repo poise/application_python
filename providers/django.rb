@@ -24,10 +24,10 @@ action :before_compile do
 
   include_recipe 'python'
 
-  new_resource.migration_command "#{::File.join(new_resource.virtualenv, "bin", "python")} manage.py syncdb --migrate --noinput" if !new_resource.migration_command
+  new_resource.migration_command "cd #{new_resource.base_django_app_path} ; #{manage_py_cmd(new_resource)} syncdb --migrate --noinput" if !new_resource.migration_command
 
   new_resource.symlink_before_migrate.update({
-    new_resource.local_settings_base => new_resource.local_settings_file,
+    new_resource.local_settings_base => ::File.join( new_resource.base_django_app_path, new_resource.local_settings_file )
   })
 end
 
@@ -55,8 +55,8 @@ action :before_migrate do
   end
   if new_resource.requirements
     Chef::Log.info("Installing using requirements file: #{new_resource.requirements}")
-    execute "pip install -E #{new_resource.virtualenv} -r #{new_resource.requirements}" do
-      cwd new_resource.release_path
+    execute "#{pip_cmd(new_resource)} install -r #{new_resource.requirements}" do
+      cwd django_app_folder( new_resource )
     end
   else
     Chef::Log.debug("No requirements file found")
@@ -68,10 +68,10 @@ action :before_symlink do
 
   if new_resource.collectstatic
     cmd = new_resource.collectstatic.is_a?(String) ? new_resource.collectstatic : "collectstatic --noinput"
-    execute "#{::File.join(new_resource.virtualenv, "bin", "python")} manage.py #{cmd}" do
+    execute "#{manage_py_cmd(new_resource)} #{cmd}" do
       user new_resource.owner
       group new_resource.group
-      cwd new_resource.release_path
+      cwd django_app_folder( new_resource )
     end
   end
 
@@ -87,6 +87,58 @@ action :before_symlink do
 end
 
 action :before_restart do
+
+  additional_fixtures_path = ::File.join( new_resource.release_path, "additional_fixtures" )
+
+  directory "django::additional_fixtures" do
+    path additional_fixtures_path
+    user new_resource.owner
+    group new_resource.group
+    mode "0775"
+  end
+
+  new_resource.additional_fixtures.each do |fixture|
+    directory "django::additional_fixtures::#{fixture[:path]}" do
+      path ::File.dirname( "#{additional_fixtures_path}/#{fixture[:path]}" )
+      recursive true
+      user new_resource.owner
+      group new_resource.group
+      mode "0775"
+    end
+
+    case fixture[:type]
+      when "cookbook_file"
+        cookbook_file "django::additional_fixtures::#{fixture[:path]}" do
+          cookbook new_resource.fixture_cookbook
+          source fixture[:path]
+          path "#{additional_fixtures_path}/#{fixture[:path]}"
+          user new_resource.owner
+          group new_resource.group
+          mode "0775"
+        end
+
+      when "template"
+        template "django::additional_fixtures::#{fixture[:path]}" do
+          cookbook new_resource.fixture_cookbook
+          source "#{fixture[:path]}.erb"
+          path "#{additional_fixtures_path}/#{fixture[:path]}"
+          variables fixture[:variables]
+          user new_resource.owner
+          group new_resource.group
+          mode "0775"
+        end
+
+      else
+        raise NotImplementedError, "#{fixture[:type]} not yet supported"
+
+    end
+
+    execute "django::additional_fixtures::#{fixture[:path]}" do
+      cwd django_app_folder( new_resource )
+      command "#{manage_py_cmd( new_resource )} loaddata #{additional_fixtures_path}/#{fixture[:path]}"
+    end
+  end
+
 end
 
 action :after_restart do
@@ -125,4 +177,16 @@ def created_settings_file
       :legacy => new_resource.legacy_database_settings
     }
   end
+end
+
+def pip_cmd(nr)
+  ::File.join( nr.virtualenv, '/bin/pip' )
+end
+
+def manage_py_cmd(nr)
+  "#{::File.join( nr.virtualenv, '/bin/python' )} manage.py"
+end
+
+def django_app_folder(nr)
+  ::File.join( nr.release_path, nr.base_django_app_path )
 end
