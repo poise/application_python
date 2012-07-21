@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+require 'tmpdir'
+
 include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
@@ -55,7 +57,7 @@ action :before_migrate do
   end
   if new_resource.requirements
     Chef::Log.info("Installing using requirements file: #{new_resource.requirements}")
-    execute "pip install -E #{new_resource.virtualenv} -r #{new_resource.requirements}" do
+    execute "pip install --source=#{Dir.tmpdir} -E #{new_resource.virtualenv} -r #{new_resource.requirements}" do
       cwd new_resource.release_path
     end
   else
