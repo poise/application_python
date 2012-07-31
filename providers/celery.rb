@@ -62,7 +62,7 @@ action :before_deploy do
 
   cmds = {}
   cmds[:celeryd] = "celeryd #{new_resource.celerycam ? "-E" : ""}" if new_resource.celeryd
-  cmds[:celerybeat] = "celerybeat" if new_resource.celerycam
+  cmds[:celerybeat] = "celerybeat" if new_resource.celerybeat
   if new_resource.celerycam
     if new_resource.django
       cmd = "celerycam"
