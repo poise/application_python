@@ -18,17 +18,21 @@
 # limitations under the License.
 #
 
+require 'tmpdir'
+
 include Chef::Mixin::LanguageIncludeRecipe
 
 action :before_compile do
 
   include_recipe "supervisor"
 
+  install_packages
+
   django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
   gunicorn_install "gunicorn-#{new_resource.application.name}" do
-    virtualenv django_resource ? django_resource.virtualenv : nil
+    virtualenv django_resource ? django_resource.virtualenv : new_resource.virtualenv
   end
-
+  
   if !new_resource.restart_command
     new_resource.restart_command do
       run_context.resource_collection.find(:supervisor_service => new_resource.application.name).run_action(:restart)
@@ -73,7 +77,8 @@ action :before_deploy do
       raise "No Django deployment resource found" unless django_resource
       base_command = "#{::File.join(django_resource.virtualenv, "bin", "python")} manage.py run_gunicorn"
     else
-      base_command = "gunicorn #{new_resource.app_module}"
+      gunicorn_command = new_resource.virtualenv.nil? ? "gunicorn" : "#{::File.join(new_resource.virtualenv, "bin", "gunicorn")}"
+      base_command = "#{gunicorn_command} #{new_resource.app_module}"
     end
     command "#{base_command} -c #{new_resource.application.path}/shared/gunicorn_config.py"
     directory ::File.join(new_resource.path, "current")
@@ -84,6 +89,7 @@ action :before_deploy do
 end
 
 action :before_migrate do
+  install_requirements
 end
 
 action :before_symlink do
@@ -93,4 +99,45 @@ action :before_restart do
 end
 
 action :after_restart do
+end
+
+protected
+
+def install_packages
+  new_resource.packages.each do |name, ver|
+    python_pip name do
+      version ver if ver && ver.length > 0
+      virtualenv new_resource.virtualenv
+      action :install
+    end
+  end
+end
+
+def install_requirements
+  if new_resource.requirements.nil?
+    # look for requirements.txt files in common locations
+    [
+      ::File.join(new_resource.release_path, "requirements", "#{node.chef_environment}.txt"),
+      ::File.join(new_resource.release_path, "requirements.txt")
+    ].each do |path|
+      if ::File.exists?(path)
+        new_resource.requirements path
+        break
+      end
+    end
+  end
+  if new_resource.requirements
+    Chef::Log.info("Installing using requirements file: #{new_resource.requirements}")
+    # TODO normalise with python/providers/pip.rb 's pip_cmd
+    if new_resource.virtualenv.nil?
+      pip_cmd = 'pip'
+    else
+      pip_cmd = ::File.join(new_resource.virtualenv, 'bin', 'pip')
+    end
+    execute "#{pip_cmd} install --src=#{Dir.tmpdir} -r #{new_resource.requirements}" do
+      cwd new_resource.release_path
+    end
+  else
+    Chef::Log.debug("No requirements file found")
+  end
 end
