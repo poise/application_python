@@ -1,3 +1,7 @@
+## v1.0.4:
+
+* [COOK-2042] - gunicorn LWRP support for virtualenv, deps
+
 ## v1.0.2:
 
 * [COOK-1420] - template resource source cookbook is wrong
