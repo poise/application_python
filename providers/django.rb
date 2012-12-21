@@ -58,7 +58,7 @@ action :before_migrate do
   if new_resource.requirements
     Chef::Log.info("Installing using requirements file: #{new_resource.requirements}")
     pip_cmd = ::File.join(new_resource.virtualenv, 'bin', 'pip')
-    execute "#{pip_cmd} install --source=#{Dir.tmpdir} -E #{new_resource.virtualenv} -r #{new_resource.requirements}" do
+    execute "#{pip_cmd} install --source=#{Dir.tmpdir} -r #{new_resource.requirements}" do
       cwd new_resource.release_path
     end
   else
@@ -117,7 +117,7 @@ def created_settings_file
 
   template "#{new_resource.path}/shared/#{new_resource.local_settings_base}" do
     source new_resource.settings_template || "settings.py.erb"
-    cookbook new_resource.settings_template ? new_resource.cookbook_name : "application_python"
+    cookbook new_resource.settings_template ? new_resource.cookbook_name.to_s : "application_python"
     owner new_resource.owner
     group new_resource.group
     mode "644"
