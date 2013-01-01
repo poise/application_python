@@ -46,8 +46,8 @@ action :before_migrate do
   if new_resource.requirements.nil?
     # look for requirements.txt files in common locations
     [
-      ::File.join(new_resource.path, "requirements", "#{node.chef_environment}.txt"),
-      ::File.join(new_resource.path, "requirements.txt")
+      ::File.join(new_resource.release_path, "requirements", "#{node.chef_environment}.txt"),
+      ::File.join(new_resource.release_path, "requirements.txt")
     ].each do |path|
       if ::File.exists?(path)
         new_resource.requirements path
