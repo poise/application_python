@@ -1,3 +1,9 @@
+## v1.0.6:
+
+* [COOK-2122] - pip was incorrectly using -E syntax
+* [COOK-2147] - django sub-resource searched wrong directory for
+  requirements.txt
+
 ## v1.0.4:
 
 * [COOK-2042] - gunicorn LWRP support for virtualenv, deps
