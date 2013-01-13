@@ -117,7 +117,7 @@ def created_settings_file
 
   template "#{new_resource.path}/shared/#{new_resource.local_settings_base}" do
     source new_resource.settings_template || "settings.py.erb"
-    cookbook new_resource.settings_template ? new_resource.cookbook_name : "application_python"
+    cookbook new_resource.settings_template ? new_resource.cookbook_name.to_s : "application_python"
     owner new_resource.owner
     group new_resource.group
     mode "644"
