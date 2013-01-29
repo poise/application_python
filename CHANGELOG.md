@@ -1,3 +1,8 @@
+## v1.0.8:
+
+* [COOK-2175] - Template cookbook attribute expecting a string,
+getting symbol instead.
+
 ## v1.0.6:
 
 * [COOK-2122] - pip was incorrectly using -E syntax
