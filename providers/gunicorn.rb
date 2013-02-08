@@ -32,7 +32,7 @@ action :before_compile do
   gunicorn_install "gunicorn-#{new_resource.application.name}" do
     virtualenv django_resource ? django_resource.virtualenv : new_resource.virtualenv
   end
-  
+
   if !new_resource.restart_command
     new_resource.restart_command do
       run_context.resource_collection.find(:supervisor_service => new_resource.application.name).run_action(:restart)
@@ -72,6 +72,9 @@ action :before_deploy do
 
   supervisor_service new_resource.application.name do
     action :enable
+    if new_resource.environment
+      environment new_resource.environment
+    end
     if new_resource.app_module == :django
       django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
       raise "No Django deployment resource found" unless django_resource

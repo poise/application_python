@@ -27,6 +27,7 @@ attribute :celeryd, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :celerybeat, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :celerycam, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :camera_class, :kind_of => [String, NilClass], :default => nil
+attribute :environment, :kind_of => [Hash], :default => {}
 
 def config_base
   config.split(/[\\\/]/).last
