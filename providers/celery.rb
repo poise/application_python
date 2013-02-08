@@ -84,7 +84,7 @@ action :before_deploy do
       else
         command cmd
         if new_resource.environment
-          environment new_resource.environment.merge!({'CELERY_CONFIG_MODULE' => new_resource.config})
+          environment new_resource.environment.merge({'CELERY_CONFIG_MODULE' => new_resource.config})
         else
           environment 'CELERY_CONFIG_MODULE' => new_resource.config
         end
