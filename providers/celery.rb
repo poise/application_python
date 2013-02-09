@@ -80,9 +80,14 @@ action :before_deploy do
         django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
         raise "No Django deployment resource found" unless django_resource
         command "#{::File.join(django_resource.virtualenv, "bin", "python")} manage.py #{cmd}"
+        environment new_resource.environment
       else
         command cmd
-        environment 'CELERY_CONFIG_MODULE' => new_resource.config
+        if new_resource.environment
+          environment new_resource.environment.merge({'CELERY_CONFIG_MODULE' => new_resource.config})
+        else
+          environment 'CELERY_CONFIG_MODULE' => new_resource.config
+        end
       end
       directory ::File.join(new_resource.path, "current")
       autostart false
