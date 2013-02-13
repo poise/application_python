@@ -50,7 +50,7 @@ action :before_deploy do
   gunicorn_config "#{new_resource.application.path}/shared/gunicorn_config.py" do
     action :create
     template new_resource.settings_template || 'gunicorn.py.erb'
-    cookbook new_resource.settings_template ? new_resource.cookbook_name : 'gunicorn'
+    cookbook new_resource.settings_template ? new_resource.cookbook_name.to_s : 'gunicorn'
     listen "#{new_resource.host}:#{new_resource.port}"
     backlog new_resource.backlog
     worker_processes new_resource.workers
