@@ -36,7 +36,7 @@ The `django` sub-resource LWRP deals with deploying Django webapps from an SCM r
 
 A new virtualenv will be created for the application in "#{path}/shared/env"; pip package will be installed in that virtualenv.
 
-# Attribute Parameters
+### Attribute Parameters
 
 - packages: an Array of pip packages to install
 - requirements: the relative path to a requirements file. If not specified the provider will look for one in the project root, named either "requirements/#{chef_environment}.txt" or "requirements.txt"
@@ -49,7 +49,7 @@ A new virtualenv will be created for the application in "#{path}/shared/env"; pi
 - debug: used by the default settings template to control debugging. Defaults to false
 - collectstatic: controls the behavior of the `staticfiles` app. If true, if will invoke manage.py with `collectstatic --noinput`; you can also pass a String with an explicit command (see Usage below). Defaults to false
 
-# Database block parameters
+### Database block parameters
 
 The database block can accept any method, which will result in an entry being created in the `@database` Hash which is passed to the context template. See Usage below for more information.
 
@@ -60,7 +60,7 @@ The `gunicorn` sub-resource LWRP configures Green Unicorn to run the application
 
 If used with a Django application, it will install gunicorn into the same virtualenv and run it with `manage.py run_gunicorn`. For other applications, gunicorn will be run with `gunicorn #{app_module}`.
 
-# Attribute Parameters
+### Attribute Parameters
 
 - app_module: mandatory. If set to :django, gunicorn will be configured to run a Django application; if set to another String or Symbol, it will be used to build the gunicorn base command.
 - settings\_template: the template to render to create the `gunicorn_config.py` file; if specified it will be looked up in the application cookbook. Defaults to "se.py.erb" from the `gunicorn` cookbook
@@ -82,6 +82,29 @@ If used with a Django application, it will install gunicorn into the same virtua
 - logfile: passed to the `gunicorn_config` LWRP
 - loglevel: passed to the `gunicorn_config` LWRP
 - proc_name: passed to the `gunicorn_config` LWRP
+- environment: hash of environment variables passed to `supervisor_service`.
+
+celery
+------
+
+The `celery` sub resource LWRP configures the application to use
+Celery.
+
+### Attribute Parameters
+
+- config: passed to `supervisor_service` for `CELERY_CONFIG_MODULE`.
+- template: name of the template to use, default `celeryconfig.py.erb`.
+- django: use this if celery is for a django application, see
+  `celerycam` below.
+- celeryd: adds celeryd to processes managed for the application by `supervisor`.
+- celerybeat: adds celerybeat to processes managed for the application
+  by `supervisor`.
+- celerycam: adds celerycam to the processes managed for the
+  application by `supervisor` if `django` is true for celery
+  sub-resource, or celeryev with the class specified with `camera_class`.
+- camera_class: class passed into celeryev for the processes managed
+  for the application by supervisor.
+- environment: hash of environment variables passed to the `supervisor_service`.
 
 Usage
 =====
@@ -97,7 +120,7 @@ A sample application that needs a database connection:
       migrate true
       packages ["libpq-dev", "git-core", "mercurial"]
 
-      django do 
+      django do
         packages ["redis"]
         requirements "requirements/mkii.txt"
         settings_template "settings.py.erb"
@@ -144,7 +167,7 @@ Author:: Joshua Timberman (<joshua@opscode.com>)
 Author:: Noah Kantrowitz (<noah@coderanger.net>)
 Author:: Seth Chisamore (<schisamo@opscode.com>)
 
-Copyright 2009-2012, Opscode, Inc.
+Copyright 2009-2013, Opscode, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
