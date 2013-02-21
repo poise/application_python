@@ -45,3 +45,4 @@ attribute :virtualenv, :kind_of => String, :default => nil
 attribute :packages, :kind_of => [Array, Hash], :default => []
 attribute :requirements, :kind_of => [NilClass, String, FalseClass], :default => nil
 attribute :environment, :kind_of => [Hash], :default => {}
+attribute :directory, :kind_of => [NilClass, String], :default => nil
