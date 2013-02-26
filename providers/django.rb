@@ -60,6 +60,8 @@ action :before_migrate do
     pip_cmd = ::File.join(new_resource.virtualenv, 'bin', 'pip')
     execute "#{pip_cmd} install --source=#{Dir.tmpdir} -r #{new_resource.requirements}" do
       cwd new_resource.release_path
+      user new_resource.owner
+      group new_resource.group
     end
   else
     Chef::Log.debug("No requirements file found")
@@ -100,6 +102,8 @@ protected
 def install_packages
   python_virtualenv new_resource.virtualenv do
     path new_resource.virtualenv
+    owner new_resource.owner
+    group new_resource.group
     action :create
   end
 
@@ -107,6 +111,8 @@ def install_packages
     python_pip name do
       version ver if ver && ver.length > 0
       virtualenv new_resource.virtualenv
+      user new_resource.owner
+      group new_resource.group
       action :install
     end
   end
