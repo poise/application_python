@@ -60,6 +60,9 @@ action :before_migrate do
     pip_cmd = ::File.join(new_resource.virtualenv, 'bin', 'pip')
     execute "#{pip_cmd} install --source=#{Dir.tmpdir} -r #{new_resource.requirements}" do
       cwd new_resource.release_path
+      # seems that if we don't set the HOME env var pip tries to log to /root/.pip, which fails due to permissions
+      # setting HOME also enables us to control pip behavior on per-project basis by dropping off a pip.conf file there
+      environment 'HOME' => ::File.join(new_resource.path,'shared')
       user new_resource.owner
       group new_resource.group
     end
