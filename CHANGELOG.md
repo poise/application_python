@@ -1,3 +1,15 @@
+## v1.1.0:
+
+* [COOK-2330] - celeryconfig.py.erb tries to use non-existant String#upper method
+* [COOK-2337] - It should be possible to pass environment variables
+  through to gunicorn and celery supervisor configs
+* [COOK-2403] - cookbook attribute expects argument to be a string
+* [COOK-2453] - application_python should allow the working directory
+  of gunicorn processes to be set via an attribute
+* [COOK-2475] - celerybeat supervisor process is unnecessarily configured
+* [COOK-2484] - virtualenv and requirements are installed as root
+  instead of uid/gid specified by application properties
+
 ## v1.0.8:
 
 * [COOK-2175] - Template cookbook attribute expecting a string,
