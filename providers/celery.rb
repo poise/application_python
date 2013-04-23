@@ -62,7 +62,7 @@ action :before_deploy do
 
   cmds = {}
   if new_resource.celeryd
-    case new_resource.queue
+    case new_resource.queues
     when Array
       cmds[:celeryd] = "celeryd -Q #{new_resource.queues.join(',')} #{new_resource.celerycam ? "-E" : ""}"
     when NilClass
