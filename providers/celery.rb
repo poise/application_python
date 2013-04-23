@@ -60,13 +60,18 @@ action :before_deploy do
     variables :broker => new_resource.broker, :results => new_resource.results
   end
 
+  if new_resource.celerycam
+    # turn on events automatically, if we are going to run celerycam
+    new_resource.celeryevents(true)
+  end
+
   cmds = {}
   if new_resource.celeryd
     case new_resource.queues
     when Array
-      cmds[:celeryd] = "celeryd -Q #{new_resource.queues.join(',')} #{new_resource.celerycam ? "-E" : ""}"
+      cmds[:celeryd] = "celeryd -Q #{new_resource.queues.join(',')} #{new_resource.celeryevents ? "-E" : ""}"
     when NilClass
-      cmds[:celeryd] = "celeryd #{new_resource.celerycam ? "-E" : ""}"
+      cmds[:celeryd] = "celeryd #{new_resource.celeryevents ? "-E" : ""}"
     end
   end
   cmds[:celerybeat] = "celerybeat" if new_resource.celerybeat
