@@ -1,3 +1,14 @@
+## v1.2.0:
+
+### Improvement
+
+- [COOK-2611]: Celery LWRP should configure which queues a celeryd
+  worker binds to
+
+### Bug
+
+- [COOK-2599]: gunicorn provider fails if no `node['cpu']['total']`
+
 ## v1.1.0:
 
 * [COOK-2330] - celeryconfig.py.erb tries to use non-existant String#upper method
