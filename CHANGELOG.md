@@ -1,3 +1,10 @@
+## v1.2.2:
+
+### Bug
+
+- [COOK-2796]: celery provider tries to case switch on 'queue'
+  parameter instead of 'queues' parameter
+
 ## v1.2.0:
 
 ### Improvement
