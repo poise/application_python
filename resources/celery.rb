@@ -27,7 +27,7 @@ attribute :celeryd, :kind_of => [TrueClass, FalseClass], :default => true
 attribute :celerybeat, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :celerycam, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :camera_class, :kind_of => [String, NilClass], :default => nil
-attribute :celeryevents, :kind_of => [TrueClass, FalseClass], :default => false
+attribute :enable_events, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :environment, :kind_of => [Hash], :default => {}
 attribute :queues, :kind_of => [Array,NilClass], :default => nil
 
