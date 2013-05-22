@@ -82,7 +82,9 @@ If used with a Django application, it will install gunicorn into the same virtua
 - logfile: passed to the `gunicorn_config` LWRP
 - loglevel: passed to the `gunicorn_config` LWRP
 - proc_name: passed to the `gunicorn_config` LWRP
-- environment: hash of environment variables passed to `supervisor_service`.
+- environment: hash of environment variables passed to `supervisor_service`
+- autostart: passed to `supervisor_service`.
+
 
 celery
 ------

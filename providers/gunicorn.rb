@@ -85,7 +85,7 @@ action :before_deploy do
     end
     command "#{base_command} -c #{new_resource.application.path}/shared/gunicorn_config.py"
     directory new_resource.directory.nil? ? ::File.join(new_resource.path, "current") : new_resource.directory
-    autostart false
+    autostart new_resource.autostart
     user new_resource.owner
   end
 
