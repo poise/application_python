@@ -1,3 +1,12 @@
+## v1.2.4:
+
+### Bug
+
+- [COOK-2747]: celerycam configuration is not suitable for multiple
+  node celery installation
+- [COOK-2766]: pip does not use `deploy_key` in  django ressource of
+  `application_python`
+
 ## v1.2.2:
 
 ### Bug
