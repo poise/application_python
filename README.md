@@ -105,6 +105,7 @@ Celery.
 - camera_class: class passed into celeryev for the processes managed
   for the application by supervisor.
 - environment: hash of environment variables passed to the `supervisor_service`.
+- autostart: passed to `supervisor_service`.
 
 Usage
 =====

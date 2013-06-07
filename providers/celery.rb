@@ -102,7 +102,7 @@ action :before_deploy do
         end
       end
       directory ::File.join(new_resource.path, "current")
-      autostart false
+      autostart new_resource.autostart
       user new_resource.owner
     end
   end

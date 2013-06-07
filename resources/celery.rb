@@ -29,6 +29,7 @@ attribute :celerycam, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :camera_class, :kind_of => [String, NilClass], :default => nil
 attribute :enable_events, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :environment, :kind_of => [Hash], :default => {}
+attribute :autostart, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :queues, :kind_of => [Array,NilClass], :default => nil
 
 def config_base
