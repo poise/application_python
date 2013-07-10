@@ -30,9 +30,21 @@ attribute :camera_class, :kind_of => [String, NilClass], :default => nil
 attribute :enable_events, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :environment, :kind_of => [Hash], :default => {}
 attribute :queues, :kind_of => [Array,NilClass], :default => nil
+attribute :virtualenv, :kind_of => [String, NilClass], :default => nil
 
 def config_base
   config.split(/[\\\/]/).last
+end
+
+def config_module
+  # CELERY_CONFIG_MODULE expects a python
+  # module name, not a file path, but we
+  # need a filename for the config option
+  # to set up symlinks and what-not. This
+  # function gives the first part of the
+  # filename so that we can use it for the
+  # module name.
+  config.split(/\./).first
 end
 
 def broker(*args, &block)
