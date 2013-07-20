@@ -6,6 +6,8 @@ description      "Deploys and configures Python-based applications"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "1.2.5"
 
-%w{ application python gunicorn supervisor }.each do |cb|
+%w{ python gunicorn supervisor }.each do |cb|
   depends cb
 end
+
+depends "application", "~> 3.0"
