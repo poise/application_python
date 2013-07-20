@@ -18,7 +18,7 @@
 # limitations under the License.
 #
 
-include Chef::Resource::ApplicationBase
+include ApplicationCookbook::ResourceBase
 
 attribute :app_module, :kind_of => [String, Symbol, NilClass], :default => nil
 # Actually defaults to "settings.py.erb", but nil means it wasn't set by the user
