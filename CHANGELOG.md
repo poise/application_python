@@ -1,3 +1,9 @@
+## v2.0.0:
+
+### Bug
+
+- [COOK-3306]: Multiple Memory Leaks in Application Cookbook
+
 ## v1.2.4:
 
 ### Bug
