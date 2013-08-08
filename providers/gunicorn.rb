@@ -20,7 +20,7 @@
 
 require 'tmpdir'
 
-include Chef::Mixin::LanguageIncludeRecipe
+include Chef::DSL::IncludeRecipe
 
 action :before_compile do
 
