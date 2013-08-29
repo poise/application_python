@@ -7,7 +7,7 @@ application "packaginator" do
   migrate true
   packages ["libpq-dev", "git-core", "mercurial"]
 
-  django do 
+  django do
     packages ["redis"]
     requirements "requirements/mkii.txt"
     settings_template "settings.py.erb"
