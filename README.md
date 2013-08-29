@@ -1,43 +1,40 @@
-Description
-===========
-
+application_python Cookbook
+===========================
 This cookbook is designed to be able to describe and deploy Python web applications. Currently supported:
 
-* plain python web applications
-* Django
-* Green Unicorn
-* Celery
+- plain python web applications
+- Django
+- Green Unicorn
+- Celery
 
 Note that this cookbook provides the Python-specific bindings for the `application` cookbook; you will find general documentation in that cookbook.
 
 Other application stacks may be supported at a later date.
 
-Requirements
-============
 
+Requirements
+------------
 Chef 0.10.0 or higher required (for Chef environment use).
 
 The following Opscode cookbooks are dependencies:
 
-* application
-* python
-* gunicorn
-* supervisor
+- application
+- python
+- gunicorn
+- supervisor
+
 
 Resources/Providers
-==========
-
+-------------------
 The LWRPs provided by this cookbook are not meant to be used by themselves; make sure you are familiar with the `application` cookbook before proceeding.
 
-django
-------
 
+### django
 The `django` sub-resource LWRP deals with deploying Django webapps from an SCM repository. It uses the `deploy_revision` LWRP to perform the bulk of its tasks, and many concepts and parameters map directly to it. Check the documentation for `deploy_revision` for more information.
 
 A new virtualenv will be created for the application in "#{path}/shared/env"; pip package will be installed in that virtualenv.
 
-### Attribute Parameters
-
+#### Attribute Parameters
 - packages: an Array of pip packages to install
 - requirements: the relative path to a requirements file. If not specified the provider will look for one in the project root, named either "requirements/#{chef_environment}.txt" or "requirements.txt"
 - database\_master\_role: if a role name is provided, a Chef search will be run to find a node with than role in the same environment as the current role. If a node is found, its IP address will be used when rendering the context file, but see the "Database block parameters" section below
@@ -49,18 +46,16 @@ A new virtualenv will be created for the application in "#{path}/shared/env"; pi
 - debug: used by the default settings template to control debugging. Defaults to false
 - collectstatic: controls the behavior of the `staticfiles` app. If true, if will invoke manage.py with `collectstatic --noinput`; you can also pass a String with an explicit command (see Usage below). Defaults to false
 
-### Database block parameters
+#### Database block parameters
 
 The database block can accept any method, which will result in an entry being created in the `@database` Hash which is passed to the context template. See Usage below for more information.
 
-gunicorn
---------
-
+### gunicorn
 The `gunicorn` sub-resource LWRP configures Green Unicorn to run the application.
 
 If used with a Django application, it will install gunicorn into the same virtualenv and run it with `manage.py run_gunicorn`. For other applications, gunicorn will be run with `gunicorn #{app_module}`.
 
-### Attribute Parameters
+#### Attribute Parameters
 
 - app_module: mandatory. If set to :django, gunicorn will be configured to run a Django application; if set to another String or Symbol, it will be used to build the gunicorn base command.
 - settings\_template: the template to render to create the `gunicorn_config.py` file; if specified it will be looked up in the application cookbook. Defaults to "se.py.erb" from the `gunicorn` cookbook
@@ -84,14 +79,10 @@ If used with a Django application, it will install gunicorn into the same virtua
 - proc_name: passed to the `gunicorn_config` LWRP
 - environment: hash of environment variables passed to `supervisor_service`.
 
-celery
-------
+### celery
+The `celery` sub resource LWRP configures the application to use Celery.
 
-The `celery` sub resource LWRP configures the application to use
-Celery.
-
-### Attribute Parameters
-
+#### Attribute Parameters
 - config: passed to `supervisor_service` for `CELERY_CONFIG_MODULE`.
 - template: name of the template to use, default `celeryconfig.py.erb`.
 - django: use this if celery is for a django application, see
@@ -106,67 +97,74 @@ Celery.
   for the application by supervisor.
 - environment: hash of environment variables passed to the `supervisor_service`.
 
-Usage
-=====
 
+Usage
+-----
 A sample application that needs a database connection:
 
-    application "packaginator" do
-      path "/srv/packaginator"
-      owner "nobody"
-      group "nogroup"
-      repository "https://github.com/coderanger/packaginator.git"
-      revision "master"
-      migrate true
-      packages ["libpq-dev", "git-core", "mercurial"]
+```ruby
+application "packaginator" do
+  path "/srv/packaginator"
+  owner "nobody"
+  group "nogroup"
+  repository "https://github.com/coderanger/packaginator.git"
+  revision "master"
+  migrate true
+  packages ["libpq-dev", "git-core", "mercurial"]
 
-      django do
-        packages ["redis"]
-        requirements "requirements/mkii.txt"
-        settings_template "settings.py.erb"
-        debug true
-        collectstatic "build_static --noinput"
-        database do
-          database "packaginator"
-          engine "postgresql_psycopg2"
-          username "packaginator"
-          password "awesome_password"
-        end
-        database_master_role "packaginator_database_master"
-      end
+  django do
+    packages ["redis"]
+    requirements "requirements/mkii.txt"
+    settings_template "settings.py.erb"
+    debug true
+    collectstatic "build_static --noinput"
+    database do
+      database "packaginator"
+      engine "postgresql_psycopg2"
+      username "packaginator"
+      password "awesome_password"
     end
+    database_master_role "packaginator_database_master"
+  end
+end
+```
 
 You can invoke any method on the database block:
 
-    application "my-app" do
-      path "/srv/packaginator"
-      repository "..."
-      revision "..."
+```ruby
+application "my-app" do
+  path "/srv/packaginator"
+  repository "..."
+  revision "..."
 
-      django do
-        database_master_role "packaginator_database_master"
-        database do
-          database 'name'
-          quorum 2
-          replicas %w[Huey Dewey Louie]
-        end
-      end
+  django do
+    database_master_role "packaginator_database_master"
+    database do
+      database 'name'
+      quorum 2
+      replicas %w[Huey Dewey Louie]
     end
+  end
+end
+```
 
 The corresponding entries will be passed to the context template:
 
-    <%= @database['quorum']
-    <%= @database['replicas'].join(',') %>
+```erb
+<%= @database['quorum'] %>
+<%= @database['replicas'].join(',') %>
+```
 
-License and Author
-==================
 
-Author:: Adam Jacob (<adam@opscode.com>)
-Author:: Andrea Campi (<andrea.campi@zephirworks.com.com>)
-Author:: Joshua Timberman (<joshua@opscode.com>)
-Author:: Noah Kantrowitz (<noah@coderanger.net>)
-Author:: Seth Chisamore (<schisamo@opscode.com>)
+License & Authors
+-----------------
+- Author:: Adam Jacob (<adam@opscode.com>)
+- Author:: Andrea Campi (<andrea.campi@zephirworks.com.com>)
+- Author:: Joshua Timberman (<joshua@opscode.com>)
+- Author:: Noah Kantrowitz (<noah@coderanger.net>)
+- Author:: Seth Chisamore (<schisamo@opscode.com>)
 
+```text
 Copyright 2009-2013, Opscode, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -180,3 +178,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
