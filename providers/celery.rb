@@ -18,7 +18,11 @@
 # limitations under the License.
 #
 
-include Chef::DSL::IncludeRecipe
+if Chef::Version.new(Chef::VERSION) < Chef::Version.new("11.0.0")
+  include Chef::Mixin::LanguageIncludeRecipe
+else
+  include Chef::DSL::IncludeRecipe
+end
 
 action :before_compile do
 
