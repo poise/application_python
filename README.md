@@ -117,7 +117,7 @@ application 'packaginator' do
     collectstatic     'build_static --noinput'
     database do
       database 'packaginator'
-      engine   'postgresql_psycopg2'
+      adapter  'postgresql_psycopg2'
       username 'packaginator'
       password 'awesome_password'
     end
