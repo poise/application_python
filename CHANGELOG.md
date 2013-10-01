@@ -3,6 +3,10 @@ application_python Cookbok CHANGELOG
 This file is used to list changes made in each version of the application_python cookbook.
 
 
+v2.0.4
+------
+- Revery changes that broke backwards compatability
+
 v2.0.2
 ------
 ### Bug
