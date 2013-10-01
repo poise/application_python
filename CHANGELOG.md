@@ -5,6 +5,9 @@ This file is used to list changes made in each version of the application_python
 
 v3.0.0
 ------
+### Breaking
+- Drop support for Chef 10
+
 ### Bug
 - **[COOK-2212](https://tickets.opscode.com/browse/COOK-2212)** - autostart when server reboots
 - **[COOK-3432](https://tickets.opscode.com/browse/COOK-3432)** - Use `Chef::DSL::IncludeRecipe` because `Chef::Mixin::LanguageIncludeRecipe` is deprecated
