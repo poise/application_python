@@ -3,8 +3,20 @@ application_python Cookbok CHANGELOG
 This file is used to list changes made in each version of the application_python cookbook.
 
 
+v3.0.0
+------
+### Bug
+- **[COOK-2212](https://tickets.opscode.com/browse/COOK-2212)** - autostart when server reboots
+- **[COOK-3432](https://tickets.opscode.com/browse/COOK-3432)** - Use `Chef::DSL::IncludeRecipe` because `Chef::Mixin::LanguageIncludeRecipe` is deprecated
+
+v2.0.4
+------
+- Revery changes that broke backwards compatability
+
 v2.0.2
 ------
+**This release did not follow semver and was reverted in 2.0.4!**
+
 ### Bug
 - **[COOK-3432](https://tickets.opscode.com/browse/COOK-3432)** - Use `Chef::DSL::IncludeRecipe` because `Chef::Mixin::LanguageIncludeRecipe` is deprecated
 
