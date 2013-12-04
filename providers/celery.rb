@@ -29,9 +29,9 @@ action :before_compile do
   if !new_resource.restart_command
     r = new_resource
     new_resource.restart_command do
-      run_context.resource_collection.find(:supervisor_service => "#{r.application.name}-celeryd").run_action(:restart) if new_resource.celeryd
-      run_context.resource_collection.find(:supervisor_service => "#{r.application.name}-celerybeat").run_action(:restart) if new_resource.celerybeat
-      run_context.resource_collection.find(:supervisor_service => "#{r.application.name}-celerycam").run_action(:restart) if new_resource.celerycam
+      run_context.resource_collection.find(:supervisor_service => "#{r.application.name}-celeryd").run_action(:restart) if r.celeryd
+      run_context.resource_collection.find(:supervisor_service => "#{r.application.name}-celerybeat").run_action(:restart) if r.celerybeat
+      run_context.resource_collection.find(:supervisor_service => "#{r.application.name}-celerycam").run_action(:restart) if r.celerycam
     end
   end
 
