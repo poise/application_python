@@ -34,8 +34,9 @@ action :before_compile do
   end
 
   if !new_resource.restart_command
+    r = new_resource
     new_resource.restart_command do
-      run_context.resource_collection.find(:supervisor_service => new_resource.application.name).run_action(:restart)
+      run_context.resource_collection.find(:supervisor_service => r.application.name).run_action(:restart)
     end
   end
 
