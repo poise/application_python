@@ -47,3 +47,9 @@ attribute :requirements, :kind_of => [NilClass, String, FalseClass], :default =>
 attribute :environment, :kind_of => [Hash], :default => {}
 attribute :autostart, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :directory, :kind_of => [NilClass, String], :default => nil
+
+def newrelic(*args, &block)
+	@newrelic ||= Mash.new
+	@newrelic.update(options_block(*args, &block))
+	@newrelic
+end
