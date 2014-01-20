@@ -45,6 +45,8 @@ A new virtualenv will be created for the application in "#{path}/shared/env"; pi
 - legacy_database_settings: if true, the default settings template will generate legacy database config variables. Defaults to false
 - debug: used by the default settings template to control debugging. Defaults to false
 - collectstatic: controls the behavior of the `staticfiles` app. If true, if will invoke manage.py with `collectstatic --noinput`; you can also pass a String with an explicit command (see Usage below). Defaults to false
+- allow_external: an array of pip packages that are allowed to be fetched from external sources.
+- allow_unverified: an array of pip packages that are allowed to be installed without checking a checksum from a verified source.
 
 #### Database block parameters
 
