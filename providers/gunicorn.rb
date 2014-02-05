@@ -76,6 +76,17 @@ action :before_deploy do
     #proc_name
   end
 
+	if !new_resource.newrelic['license'].nil?
+		new_resource.environment.update({'NEW_RELIC_CONFIG_FILE' => "#{new_resource.application.path}/shared/newrelic.ini"})
+		template "#{new_resource.application.path}/shared/newrelic.ini" do
+			source "newrelic-agent.ini.erb"
+			variables (new_resource.newrelic)
+			 owner  new_resource.application.owner
+			 group  new_resource.application.group
+			 mode 00755
+		 end
+	end
+
   supervisor_service new_resource.application.name do
     action :enable
     if new_resource.environment
@@ -88,6 +99,9 @@ action :before_deploy do
     else
       gunicorn_command = new_resource.virtualenv.nil? ? "gunicorn" : "#{::File.join(new_resource.virtualenv, "bin", "gunicorn")}"
       base_command = "#{gunicorn_command} #{new_resource.app_module}"
+    end
+    if !new_resource.newrelic['license'].nil?
+	    base_command = "#{::File.join(django_resource.virtualenv, "bin", "newrelic-admin")} run-program #{base_command}"
     end
     command "#{base_command} -c #{new_resource.application.path}/shared/gunicorn_config.py"
     directory new_resource.directory.nil? ? ::File.join(new_resource.path, "current") : new_resource.directory
@@ -120,6 +134,14 @@ def install_packages
       action :install
     end
   end
+	if !new_resource.newrelic['license'].nil? and !new_resource.newrelic['appname'].nil?
+		agent_version = new_resource.newrelic['agent_version']
+		python_pip "newrelic" do
+			version agent_version ? agent_version : "2.6.0.5"
+			virtualenv new_resource.virtualenv
+			action :install
+		end
+	end
 end
 
 def install_requirements

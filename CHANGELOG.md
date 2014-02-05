@@ -2,6 +2,9 @@ application_python Cookbok CHANGELOG
 ====================================
 This file is used to list changes made in each version of the application_python cookbook.
 
+v3.0.2
+------
+ - Make gunicorn provider support new relic agent
 
 v3.0.0
 ------

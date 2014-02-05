@@ -80,6 +80,25 @@ If used with a Django application, it will install gunicorn into the same virtua
 - environment: hash of environment variables passed to `supervisor_service`
 - autostart: passed to `supervisor_service`.
 
+#### Enabling New relic agent
+Optionally you can enable new relic agent to monitor your application. For this you can use the `newrelic` method.
+
+```ruby
+gunicorn do
+	...
+	newrelic do
+			license "<your license key>"
+			appname "<your app name>"
+			agent_version "<new relic version>"
+	end
+end
+```
+`agent_version` is optional. If not present new relic agent version `2.6.0.5` will be installed.
+
+The template used to generate the config file must be named `newrelic-agent.ini.erb` and must be located in the `templates/default` folder in your cookbook. 
+
+Any additional parameters passed to `newrelic` method will be available to the template.
+
 
 ### celery
 The `celery` sub resource LWRP configures the application to use Celery.
