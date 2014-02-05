@@ -58,7 +58,7 @@ If used with a Django application, it will install gunicorn into the same virtua
 #### Attribute Parameters
 
 - app_module: mandatory. If set to :django, gunicorn will be configured to run a Django application; if set to another String or Symbol, it will be used to build the gunicorn base command.
-- settings_template: the template to render to create the `gunicorn_config.py` file; if specified it will be looked up in the application cookbook. Defaults to "se.py.erb" from the `gunicorn` cookbook
+- settings_template: the template to render to create the `gunicorn_config.py` file; if specified it will be looked up in the application cookbook. Defaults to "gunicorn.py.erb" from the `gunicorn` cookbook
 - host: passed to the `gunicorn_config` LWRP
 - port: passed to the `gunicorn_config` LWRP
 - backlog: passed to the `gunicorn_config` LWRP
