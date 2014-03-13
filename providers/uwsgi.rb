@@ -16,22 +16,19 @@ action :before_compile do
 
   django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
   if django_resource && new_resource.virtualenv.nil?
-    new_resource.virtualenv = django_resource.virtualenv
+    new_resource.virtualenv django_resource.virtualenv
   end
 
   python_pip "uwsgi" do
     virtualenv new_resource.virtualenv
     action :install
-  end 
-
-  if !new_resource.restart_command
-    new_resource.restart_command do
-      run_context.resource.collection.find(:supervisor_service => new_resource.application.name).run_action(:restart)
-    end
   end
 
-  if new_resource.directory.nil?
-    new_resource.directory = ::File.join(new_resource.path, "current")
+  if !new_resource.restart_command
+    r = new_resource
+    new_resource.restart_command do
+      run_context.resource_collection.find(:supervisor_service => r.application.name).run_action(:restart)
+    end
   end
 
   raise "You must specify an application module to load" unless new_resource.app_module
@@ -42,29 +39,30 @@ action :before_deploy do
 
   template "#{new_resource.application.path}/shared/uwsgi.ini" do
     mode 00644
-    template new_resource.settings_template || "uwsgi.ini.erb"
+    source new_resource.settings_template || "uwsgi.ini.erb"
     cookbook new_resource.settings_template ? new_resource.cookbook_name.to_s : "application_python"
     variables({
       :uwsgi => {
         :home => new_resource.virtualenv,
-        :chdir => new_resource.directory,
+        :chdir => new_resource.directory ? new_resource.directory : ::File.join(new_resource.application.path, "current"),
         :master => new_resource.master,
         :module => new_resource.app_module,
         :socket => new_resource.socket,
-        :workers => new_resource.workers
-      },
-      :extra_options => extra_options
+        :protocol => new_resource.protocol,
+        :workers => new_resource.workers,
+        :extra_options => new_resource.extra_options
+      }
     })
   end
 
   supervisor_service new_resource.application.name do
     action :enable
+    environment new_resource.environment
+    base_command = new_resource.virtualenv.nil? ? "uwsgi" : ::File.join(new_resource.virtualenv, "bin", "uwsgi")
+    command "#{base_command} --ini #{new_resource.application.path}/shared/uwsgi.ini"
+    directory new_resource.directory ? new_resource.directory : ::File.join(new_resource.application.path, "current")
     autostart new_resource.autostart
     user new_resource.owner
-    environment new_resource.environment if new_resource.environment
-    directory new_resource.directory
-    base_command = new_resource.virtualenv.nil? ? "uwsgi" : ::File.join(new_resource.virtualenv, "bin", "uwsgi")
-    command "#{base_command} -ini #{new_resource.application.path}/shared/uswgi.ini"
   end
 
 end
@@ -76,11 +74,12 @@ action :before_migrate do
 end
 
 action :before_symlink do
-
 end
 
 action :before_restart do
+end
 
+action :after_restart do
 end
 
 protected
