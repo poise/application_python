@@ -12,18 +12,6 @@ action :before_compile do
 
   include_recipe "supervisor"
 
-  install_packages
-
-  django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
-  if django_resource && new_resource.virtualenv.nil?
-    new_resource.virtualenv django_resource.virtualenv
-  end
-
-  python_pip "uwsgi" do
-    virtualenv new_resource.virtualenv
-    action :install
-  end
-
   if !new_resource.restart_command
     r = new_resource
     new_resource.restart_command do
@@ -36,6 +24,18 @@ action :before_compile do
 end
 
 action :before_deploy do
+
+  django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
+  if django_resource && new_resource.virtualenv.nil?
+    new_resource.virtualenv django_resource.virtualenv
+  end
+
+  install_packages
+
+  python_pip "uwsgi" do
+    virtualenv new_resource.virtualenv
+    action :install
+  end
 
   template "#{new_resource.application.path}/shared/uwsgi.ini" do
     mode 00644
