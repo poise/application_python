@@ -1,0 +1,13 @@
+DEBUG = <%= @debug ? "True" : "False" %>
+<% if @settings -%>
+<%   @settings.each do |key,value| -%>
+<%     case value -%>
+<%     when String -%>
+<%=      key %> = "<%= value %>"
+<%     when TrueClass, FalseClass -%>
+<%=      key %> = <%= value ? "True" : "False" %>
+<%     when Array -%>
+<%=      key %> = <%= value %>
+<%     end -%>
+<%   end -%>
+<% end -%>
