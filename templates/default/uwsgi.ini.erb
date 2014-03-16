@@ -1,0 +1,10 @@
+[uwsgi]
+die-on-term
+<% %w{ chdir home master module socket protocol workers }.each do |key| -%>
+<%=  key %> = <%= @uwsgi[key.to_sym] %>
+<% end -%>
+<% if @uwsgi[:extra_options] -%>
+<%   @uwsgi[:extra_options].each do |key, value| -%>
+<%=    key.gsub('_', '-') %> = <%= value %>
+<%   end -%>
+<% end -%>

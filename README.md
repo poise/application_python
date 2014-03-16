@@ -80,6 +80,23 @@ If used with a Django application, it will install gunicorn into the same virtua
 - environment: hash of environment variables passed to `supervisor_service`
 - autostart: passed to `supervisor_service`.
 
+### uwsgi
+The `uwsgi` sub-resource LWRP configures UWSGI to run the application.
+
+If used with a Django application, it will install uwsgi into the same virtualenv.
+
+
+#### Attribute Parameters
+
+- app_module: mandatory. For django applications this is typically `your_project_name.wsgi:application`
+- settings_template: the template to render to create the `uwsgi.ini` file; if specified it will be looked up in the application cookbook. Defaults to "uwsgi.ini.erb" from the `application_python` cookbook
+- master: Enable the uwsgi master process. Defaults to 'true'.
+- socket: Socket to listen on. It can be the path to a socket file, port assignment, or address and port assignment. If you use a socket file you will be responsible for ensuring the paths exist with the right permissions. Defaults to ':8080'
+- protocol: Protocol uwsgi should use for socket. Defaults to 'http', can also be 'uwsgi' or 'fastcgi'.
+- workers: Number of workers to spawn. Default is determined by the number of cpus on the node.
+- directory: Directory to chdir into before starting uwsgi. Default is 'nil'.
+- environment: hash of environment variables passed to `supervisor_service`.
+- extra_options: hash of additional options to be passed to to the uwsgi settings template.
 
 ### celery
 The `celery` sub resource LWRP configures the application to use Celery.
@@ -93,7 +110,6 @@ The `celery` sub resource LWRP configures the application to use Celery.
 - celerycam: adds celerycam to the processes managed for the application by `supervisor` if `django` is true for celery sub-resource, or celeryev with the class specified with `camera_class`.
 - camera_class: class passed into celeryev for the processes managed for the application by supervisor.
 - environment: hash of environment variables passed to the `supervisor_service`.
-
 
 Usage
 -----
