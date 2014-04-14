@@ -10,4 +10,4 @@ version          "3.0.3"
   depends cb
 end
 
-depends "application", "~> 3.0"
+depends "application"
