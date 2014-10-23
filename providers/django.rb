@@ -110,6 +110,7 @@ protected
 
 def install_packages
   python_virtualenv new_resource.virtualenv do
+    interpreter new_resource.interpreter unless new_resource.interpreter.nil?
     path new_resource.virtualenv
     owner new_resource.owner
     group new_resource.group
