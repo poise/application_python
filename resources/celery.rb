@@ -30,6 +30,9 @@ attribute :camera_class, :kind_of => [String, NilClass], :default => nil
 attribute :enable_events, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :environment, :kind_of => [Hash], :default => {}
 attribute :queues, :kind_of => [Array,NilClass], :default => nil
+## Added process_name and numprocs for haystack-celeryd override in providers/celeryd
+attribute :process_name, :kind_of => [String, NilClass], :default => '%(program_name)s'
+attribute :numprocs, :kind_of => Integer, :default => 1
 
 def config_base
   config.split(/[\\\/]/).last
