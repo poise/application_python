@@ -1,0 +1,19 @@
+sudo: false
+cache: bundler
+language: ruby
+rvm:
+- '2.2'
+addons:
+  apt:
+    packages:
+    - libgecode-dev
+env:
+  global:
+  - USE_SYSTEM_GECODE=true
+  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml
+bundler_args: "--binstubs=$PWD/bin --jobs 3 --retry 3"
+script:
+- "./bin/rake travis"
+gemfile:
+- test/gemfiles/chef-12.gemfile
+- test/gemfiles/master.gemfile
