@@ -71,6 +71,25 @@ describe PoiseApplicationPython::Resources::Gunicorn do
         it { is_expected.to eq '--bind 0.0.0.0:80' }
       end # /context with defaults
 
+      context 'with a config file' do
+        let(:props) { {config: '/test/myconfig.py'} }
+        it { is_expected.to eq '--config /test/myconfig.py --bind 0.0.0.0:80' }
+      end # /context with a config file
+
+      context 'with a blank config file' do
+        let(:props) { {config: ''} }
+        it { is_expected.to eq '--bind 0.0.0.0:80' }
+      end # /context with a blank config file
+
+      context 'with two binds' do
+        let(:props) { {bind: %w{0.0.0.0:80 0.0.0.0:81}} }
+        it { is_expected.to eq '--bind 0.0.0.0:80 --bind 0.0.0.0:81' }
+      end # /context with two binds
+
+      context 'with a config file and preload' do
+        let(:props) { {config: '/test/myconfig.py', preload_app: true} }
+        it { is_expected.to eq '--config /test/myconfig.py --bind 0.0.0.0:80 --preload' }
+      end # /context with a config file and preload
     end # /describe #gunicorn_command_options
   end # /describe PoiseApplicationPython::Resources::Gunicorn::Provider
 end
