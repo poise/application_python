@@ -83,6 +83,7 @@ module PoiseApplicationPython
         def service_options(resource)
           super
           resource.command("#{new_resource.python} -m gunicorn.app.wsgiapp --bind 0.0.0.0:#{new_resource.port} #{new_resource.app_module}")
+          resource.environment.update(new_resource.parent_python.python_environment) if new_resource.parent_python
         end
 
       end
