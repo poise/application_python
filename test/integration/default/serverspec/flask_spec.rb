@@ -19,7 +19,6 @@ require 'net/http'
 require 'serverspec'
 set :backend, :exec
 
-
 describe 'sinatra' do
   describe port(9000) do
     it { is_expected.to be_listening }
