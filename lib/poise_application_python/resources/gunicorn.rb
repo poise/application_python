@@ -14,6 +14,8 @@
 # limitations under the License.
 #
 
+require 'shellwords'
+
 require 'chef/provider'
 require 'chef/resource'
 require 'poise'
@@ -33,9 +35,26 @@ module PoiseApplicationPython
 
         attribute(:path, kind_of: String, name_attribute: true)
         attribute(:app_module, kind_of: String, default: lazy { default_app_module })
-        attribute(:port, kind_of: [String, Integer], default: 80)
+        attribute(:bind, kind_of: [String, Array], default: '0.0.0.0:80')
+        attribute(:config, kind_of: [String, NilClass])
+        attribute(:preload_app, equal_to: [true, false], default: false)
         attribute(:version, kind_of: [String, TrueClass, FalseClass], default: true)
 
+        # Helper to set {#bind} with just a port number.
+        #
+        # @param val [String, Integer] Port number to use.
+        # @return [void]
+        def port(val)
+          bind("0.0.0.0:#{val}")
+        end
+
+        private
+
+        # Compute the default application module to pass to gunicorn. This
+        # checks the app state and then looks for commonly used filenames.
+        # Raises an exception if no default can be found.
+        #
+        # @return [String]
         def default_app_module
           # If set in app_state, use that.
           return app_state[:python_app_module] if app_state[:python_app_module]
@@ -79,10 +98,33 @@ module PoiseApplicationPython
           end
         end
 
+        def gunicorn_command_options
+          # Based on http://docs.gunicorn.org/en/latest/settings.html
+          [].tap do |cmd|
+            # What options are common enough to deal with here?
+            # %w{config backlog workers worker_class threads worker_connections timeout graceful_timeout keepalive}.each do |opt|
+            %w{config}.each do |opt|
+              val = new_resource.send(opt)
+              if val && !(val.respond_to?(:empty?) && val.empty?)
+                cmd_opt = opt.gsub(/_/, '-')
+                cmd << "--#{cmd_opt} #{Shellwords.escape(val)}"
+              end
+            end
+            # Can be given multiple times.
+            Array(new_resource.bind).each do |bind|
+              cmd << "--bind #{bind}" if bind
+            end
+            # --preload doesn't take an argument and the name doesn't match.
+            if new_resource.preload_app
+              cmd << '--preload'
+            end
+          end
+        end
+
         # (see PoiseApplication::ServiceMixin#service_options)
         def service_options(resource)
           super
-          resource.command("#{new_resource.python} -m gunicorn.app.wsgiapp --bind 0.0.0.0:#{new_resource.port} #{new_resource.app_module}")
+          resource.command("#{new_resource.python} -m gunicorn.app.wsgiapp #{gunicorn_command_options.join(' ')} #{new_resource.app_module}")
           resource.environment.update(new_resource.parent_python.python_environment) if new_resource.parent_python
         end
 

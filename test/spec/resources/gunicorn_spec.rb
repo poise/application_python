@@ -54,4 +54,23 @@ describe PoiseApplicationPython::Resources::Gunicorn do
       end # /context with a foo.txt
     end # /describe #default_app_module
   end # /describe PoiseApplicationPython::Resources::Gunicorn::Resource
+
+  describe PoiseApplicationPython::Resources::Gunicorn::Provider do
+    let(:new_resource) { double('new_resource') }
+    let(:test_provider) { described_class.new(new_resource, nil) }
+
+    describe '#gunicorn_command_options' do
+      let(:props) { {} }
+      let(:new_resource) { PoiseApplicationPython::Resources::Gunicorn::Resource.new('/test', nil) }
+      subject { test_provider.send(:gunicorn_command_options).join(' ') }
+      before do
+        props.each {|key, value| new_resource.send(key, value) }
+      end
+
+      context 'with defaults' do
+        it { is_expected.to eq '--bind 0.0.0.0:80' }
+      end # /context with defaults
+
+    end # /describe #gunicorn_command_options
+  end # /describe PoiseApplicationPython::Resources::Gunicorn::Provider
 end
