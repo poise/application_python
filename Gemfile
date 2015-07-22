@@ -35,5 +35,3 @@ dev_gem 'poise-boiler'
 dev_gem 'poise-languages', github: 'poise/poise-languages'
 dev_gem 'poise-python', github: 'poise/poise-python'
 dev_gem 'poise-service', github: 'poise/poise-service'
-
-gem 'kitchen-docker', github: 'portertech/kitchen-docker'
