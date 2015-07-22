@@ -14,9 +14,12 @@
 # limitations under the License.
 #
 
+include_recipe 'poise-python'
 
-module PoiseApplicationPython
-  autoload :Error, 'poise_application_python/error'
-  autoload :Resources, 'poise_application_python/resources'
-  autoload :VERSION, 'poise_application_python/version'
+application '/opt/test_flask' do
+  git 'https://github.com/poise/test_flask.git'
+  python_requirements
+  gunicorn do
+    port 9000
+  end
 end

@@ -6,3 +6,4 @@ suites:
 - name: default
   run_list:
   - recipe[application_python_test]
+  - recipe[application_python_test::flask]

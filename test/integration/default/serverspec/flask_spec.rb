@@ -14,9 +14,27 @@
 # limitations under the License.
 #
 
+require 'net/http'
 
-module PoiseApplicationPython
-  autoload :Error, 'poise_application_python/error'
-  autoload :Resources, 'poise_application_python/resources'
-  autoload :VERSION, 'poise_application_python/version'
+require 'serverspec'
+set :backend, :exec
+
+
+describe 'sinatra' do
+  describe port(9000) do
+    it { is_expected.to be_listening }
+  end
+
+  let(:http) { Net::HTTP.new('localhost', 9000) }
+
+  describe '/foo' do
+    subject { http.get('/foo') }
+    its(:code) { is_expected.to eq '404' }
+  end
+
+  describe '/hi' do
+    subject { http.get('/hi') }
+    its(:code) { is_expected.to eq '200' }
+    its(:body) { is_expected.to eq 'Hello World!' }
+  end
 end
