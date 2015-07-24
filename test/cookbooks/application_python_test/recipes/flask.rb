@@ -18,7 +18,7 @@ include_recipe 'poise-python'
 
 application '/opt/test_flask' do
   git 'https://github.com/poise/test_flask.git'
-  python_requirements
+  pip_requirements
   gunicorn do
     port 9000
   end
