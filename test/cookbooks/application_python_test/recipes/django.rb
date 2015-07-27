@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 
+include_recipe 'build-essential'
 include_recipe 'poise-python'
 
 package value_for_platform_family(debian: 'libpq-dev', rhel: 'postgresql-devel')
