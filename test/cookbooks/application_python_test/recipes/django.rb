@@ -14,5 +14,18 @@
 # limitations under the License.
 #
 
-require 'poise_application_python/resources/django'
-require 'poise_application_python/resources/gunicorn'
+include_recipe 'poise-python'
+
+package value_for_platform_family(debian: 'libpq-dev', rhel: 'postgresql-devel')
+
+application '/opt/test_django' do
+  git 'https://github.com/poise/test_django.git'
+  pip_requirements
+  django do
+    database 'sqlite:///test_django.db'
+    migrate true
+  end
+  gunicorn do
+    port 9000
+  end
+end
