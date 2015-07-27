@@ -20,6 +20,6 @@ application '/opt/test_flask' do
   git 'https://github.com/poise/test_flask.git'
   pip_requirements
   gunicorn do
-    port 9000
+    port 9001
   end
 end

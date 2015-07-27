@@ -19,12 +19,12 @@ require 'net/http'
 require 'serverspec'
 set :backend, :exec
 
-describe 'sinatra' do
-  describe port(9000) do
+describe 'flask' do
+  describe port(9001) do
     it { is_expected.to be_listening }
   end
 
-  let(:http) { Net::HTTP.new('localhost', 9000) }
+  let(:http) { Net::HTTP.new('localhost', 9001) }
 
   describe '/foo' do
     subject { http.get('/foo') }
