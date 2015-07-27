@@ -88,12 +88,7 @@ module PoiseApplicationPython
         def install_gunicorn
           return unless new_resource.version
           python_package 'gunicorn' do
-            # Set the parent, could be either a resource or path string.
-            if new_resource.parent_python
-              parent_python new_resource.parent_python
-            elsif new_resource.python
-              python new_resource.python
-            end
+            python_from_parent new_resource
             version new_resource.version if new_resource.version.is_a?(String)
           end
         end
