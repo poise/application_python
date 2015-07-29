@@ -28,6 +28,15 @@ module PoiseApplicationPython
       include PoiseApplication::AppMixin::Resource
       include PoisePython::PythonCommandMixin::Resource
 
+      parent_attribute(:python, type: :python_runtime, optional: true, default: lazy { app_state_python })
+
+      def app_state_python(*args)
+        unless args.empty?
+          app_state[:python] = args.first
+        end
+        app_state[:python]
+      end
+
       def app_state_environment_python
         env = app_state_environment
         env = env.merge(parent_python.python_environment) if parent_python
