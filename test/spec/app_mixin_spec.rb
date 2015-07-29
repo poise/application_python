@@ -32,10 +32,16 @@ describe PoiseApplicationPython::AppMixin do
           app_state[:python] = PoisePython::Resources::PythonRuntime::Resource.new('inner', run_context)
           poise_test
         end
+        python_runtime 'after'
+        poise_test 'after'
+        application '/other'
+        poise_test 'other'
       end
       let(:python) { chef_run.application('/test').app_state[:python] }
 
       it { is_expected.to run_poise_test('/test').with(parent_python: python) }
+      it { is_expected.to run_poise_test('after').with(parent_python: python) }
+      it { is_expected.to run_poise_test('other').with(parent_python: chef_run.python_runtime('after')) }
       it { expect(python).to be_a Chef::Resource }
     end # /context with an app_state python
 
