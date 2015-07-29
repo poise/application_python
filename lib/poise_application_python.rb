@@ -16,6 +16,7 @@
 
 
 module PoiseApplicationPython
+  autoload :AppMixin, 'poise_application_python/app_mixin'
   autoload :Error, 'poise_application_python/error'
   autoload :Resources, 'poise_application_python/resources'
   autoload :VERSION, 'poise_application_python/version'
