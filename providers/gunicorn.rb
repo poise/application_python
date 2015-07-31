@@ -143,7 +143,7 @@ def install_requirements
     else
       pip_cmd = ::File.join(new_resource.virtualenv, 'bin', 'pip')
     end
-    execute "#{pip_cmd} install --src=#{Dir.tmpdir} -r #{new_resource.requirements}" do
+    execute "#{pip_cmd} install --exists-action w -r #{new_resource.requirements}" do
       cwd new_resource.release_path
     end
   else
