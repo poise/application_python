@@ -16,5 +16,6 @@
 
 require 'poise_application_python/resources/django'
 require 'poise_application_python/resources/gunicorn'
+require 'poise_application_python/resources/pip_requirements'
 require 'poise_application_python/resources/python'
 require 'poise_application_python/resources/virtualenv'
