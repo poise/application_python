@@ -20,7 +20,8 @@ require 'chef/provider'
 require 'chef/resource'
 require 'poise'
 require 'poise_application/service_mixin'
-require 'poise_python/python_command_mixin'
+
+require 'poise_application_python/app_mixin'
 
 
 module PoiseApplicationPython
@@ -30,7 +31,7 @@ module PoiseApplicationPython
     module Gunicorn
       class Resource < Chef::Resource
         include PoiseApplication::ServiceMixin
-        include PoisePython::PythonCommandMixin
+        include PoiseApplicationPython::AppMixin
         provides(:application_gunicorn)
 
         attribute(:path, kind_of: String, name_attribute: true)
@@ -74,6 +75,7 @@ module PoiseApplicationPython
 
       class Provider < Chef::Provider
         include PoiseApplication::ServiceMixin
+        include PoiseApplicationPython::AppMixin
         provides(:application_gunicorn)
 
         def action_enable
