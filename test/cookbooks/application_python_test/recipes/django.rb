@@ -17,8 +17,6 @@
 include_recipe 'build-essential'
 include_recipe 'poise-python'
 
-package value_for_platform_family(debian: 'libpq-dev', rhel: 'postgresql-devel')
-
 application '/opt/test_django' do
   git 'https://github.com/poise/test_django.git'
   pip_requirements
