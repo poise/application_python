@@ -24,7 +24,7 @@ module PoiseApplicationPython
     # (see Virtualenv::Resource)
     # @since 4.0.0
     module Virtualenv
-      # An `application_python_virtualenv` resource to manage Python virtual
+      # An `application_virtualenv` resource to manage Python virtual
       # environments inside an Application cookbook deployment.
       #
       # @provides application_python_virtualenv
@@ -33,7 +33,7 @@ module PoiseApplicationPython
       # @action delete
       # @example
       #   application '/app' do
-      #     python_virtualenv
+      #     virtualenv
       #   end
       class Resource < PoisePython::Resources::PythonVirtualenv::Resource
         include PoiseApplicationPython::AppMixin

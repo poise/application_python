@@ -24,16 +24,16 @@ module PoiseApplicationPython
     # (see Python::Resource)
     # @since 4.0.0
     module Python
-      # An `application_python_runtime` resource to manage Python runtimes
+      # An `application_python` resource to manage Python runtimes
       # inside an Application cookbook deployment.
       #
-      # @provides application_python_runtime
       # @provides application_python
+      # @provides application_python_python_runtime
       # @action install
       # @action uninstall
       # @example
       #   application '/app' do
-      #     python_runtime '2'
+      #     python '2'
       #   end
       class Resource < PoisePython::Resources::PythonRuntime::Resource
         include PoiseApplicationPython::AppMixin
