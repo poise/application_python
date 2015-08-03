@@ -28,7 +28,7 @@ module PoiseApplicationPython
       include PoiseApplication::AppMixin::Resource
       include PoisePython::PythonCommandMixin::Resource
 
-      parent_attribute(:python, type: :python_runtime, optional: true, default: lazy { app_state_python })
+      parent_attribute(:python, type: :python_runtime, optional: true, default: lazy { app_state_python.equal?(self) ? nil : app_state_python })
 
       def app_state_python(*args)
         unless args.empty?
