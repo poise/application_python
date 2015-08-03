@@ -54,6 +54,8 @@ module PoiseApplicationPython
         # @api private
         def after_created
           super.tap do |val|
+            # Force evaluation so we get any current parent if set.
+            parent_python
             app_state_python(self)
           end
         end
