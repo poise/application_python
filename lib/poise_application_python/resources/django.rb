@@ -55,7 +55,7 @@ module PoiseApplicationPython
       #     pip_requirements
       #     django do
       #       database do
-      #         host node['rails_host']
+      #         host node['db_host']
       #       end
       #     end
       #     gunicorn do
