@@ -19,6 +19,7 @@ include_recipe 'poise-python'
 
 application '/opt/test_django' do
   git 'https://github.com/poise/test_django.git'
+  virtualenv
   pip_requirements
   django do
     database 'sqlite:///test_django.db'
