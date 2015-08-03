@@ -87,7 +87,13 @@ module PoiseApplicationPython
         #     end
         #   @example Setting via URL
         #     database 'postgresql://localhost/blog'
-        attribute(:database, option_collector: true, parser: :parse_database_url)
+        attribute(:database, option_collector: true, parser: :parse_database_url, forced_keys: %i{name})
+        # @!attribute debug
+        #   Enable debug mode for Django.
+        #   @note
+        #     If you use this in production you will get everything you deserve.
+        #   @return [Boolean]
+        attribute(:debug, equal_to: [true, false], default: false)
         # @!attribute local_settings
         #   Template content attribute for the contents of local_settings.py.
         #   @todo Redo this doc to cover the actual attributes created.
@@ -131,7 +137,16 @@ module PoiseApplicationPython
         private
 
         def default_local_settings_options
-          raise todo
+          {}.tap do |options|
+            options[:debug] = debug
+            options[:databases] = {}
+            options[:databases]['default'] = database.inject({}) do |memo, (key, value)|
+              key = key.to_s.upcase
+              value = ENGINE_ALIASES[value] || "django.db.backends.#{value}" if key == 'ENGINE' && value && !value.empty? && !value.include?('.')
+              memo[key] = value
+              memo
+            end
+          end
         end
 
         def default_local_settings_path
@@ -157,7 +172,6 @@ module PoiseApplicationPython
         #
         # @return [Hash]
         def parse_database_url(url)
-
           parsed = URI(url)
           {}.tap do |db|
             # Store this for use later in #set_state, and maybe future use by
@@ -229,7 +243,12 @@ module PoiseApplicationPython
         def write_config
           # Allow disabling the local settings.
           return unless new_resource.local_settings_path
-          # todo
+          file new_resource.local_settings_path do
+            content new_resource.local_settings_content
+            mode '640'
+            owner new_resource.parent.owner
+            group new_resource.parent.group
+          end
         end
 
         def manage_py_execute(*cmd)
