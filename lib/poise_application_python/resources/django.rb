@@ -236,8 +236,10 @@ module PoiseApplicationPython
           python_execute "manage.py #{cmd.join(' ')}" do
             python_from_parent new_resource
             command [new_resource.manage_path] + cmd
-            environment new_resource.app_state_environment
             cwd new_resource.path
+            environment new_resource.app_state_environment
+            group new_resource.parent.group
+            user new_resource.parent.owner
           end
         end
 
