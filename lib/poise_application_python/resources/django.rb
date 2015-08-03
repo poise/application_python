@@ -142,7 +142,8 @@ module PoiseApplicationPython
             options[:databases] = {}
             options[:databases]['default'] = database.inject({}) do |memo, (key, value)|
               key = key.to_s.upcase
-              value = ENGINE_ALIASES[value] || "django.db.backends.#{value}" if key == 'ENGINE' && value && !value.empty? && !value.include?('.')
+              # Deal with engine aliases here too, just in case.
+              value = resolve_engine(value) if key == 'ENGINE'
               memo[key] = value
               memo
             end
@@ -177,7 +178,7 @@ module PoiseApplicationPython
             # Store this for use later in #set_state, and maybe future use by
             # Django in some magic world where operability happens.
             db[:URL] = url
-            db[:ENGINE] = ENGINE_ALIASES[parsed.scheme] || "django.db.backends.#{parsed.scheme}" if parsed.scheme && !parsed.scheme.empty?
+            db[:ENGINE] = resolve_engine(parsed.scheme)
             # Strip the leading /.
             path = parsed.path ? parsed.path[1..-1] : parsed.path
             # If we are using SQLite, make it an absolute path.
@@ -202,12 +203,32 @@ module PoiseApplicationPython
           end
         end
 
+        # Resolve Django database engine from shortname to dotted module.
+        #
+        # @param name [String, nil] Engine name.
+        # @return [String, nil]
+        def resolve_engine(name)
+          if name && !name.empty? && !name.include?('.')
+            ENGINE_ALIASES[name] || "django.db.backends.#{name}"
+          else
+            name
+          end
+        end
       end
 
+      # Provider for `application_django`.
+      #
+      # @since 4.0.0
+      # @see Resource
+      # @provides application_django
       class Provider < Chef::Provider
         include PoiseApplicationPython::AppMixin
         provides(:application_django)
 
+        # `deploy` action for `application_django`. Ensure all configuration
+        # files are created and other deploy tasks resolved.
+        #
+        # @return [void]
         def action_deploy
           set_state
           notifying_block do
@@ -220,6 +241,7 @@ module PoiseApplicationPython
 
         private
 
+        # Set app_state variables for future services et al.
         def set_state
           # Set environment variables for later services.
           new_resource.app_state_environment[:DJANGO_SETTINGS_MODULE] = new_resource.settings_module if new_resource.settings_module
@@ -228,18 +250,23 @@ module PoiseApplicationPython
           new_resource.app_state[:python_app_module] = new_resource.wsgi_module if new_resource.wsgi_module
         end
 
+        # Create the database using the older syncdb command.
         def run_syncdb
           manage_py_execute('syncdb', '--noinput') if new_resource.syncdb
         end
 
+        # Create the database using the newer migrate command. This should work
+        # for either South or the built-in migrations support.
         def run_migrate
           manage_py_execute('migrate', '--noinput') if new_resource.migrate
         end
 
+        # Run the asset pipeline.
         def run_collectstatic
           manage_py_execute('collectstatic', '--noinput') if new_resource.collectstatic
         end
 
+        # Create the local config settings.
         def write_config
           # Allow disabling the local settings.
           return unless new_resource.local_settings_path
@@ -251,6 +278,7 @@ module PoiseApplicationPython
           end
         end
 
+        # Run a manage.py command using `python_execute`.
         def manage_py_execute(*cmd)
           python_execute "manage.py #{cmd.join(' ')}" do
             python_from_parent new_resource
