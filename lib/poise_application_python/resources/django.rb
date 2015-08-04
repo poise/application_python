@@ -214,6 +214,7 @@ module PoiseApplicationPython
             name
           end
         end
+
       end
 
       # Provider for `application_django`.
