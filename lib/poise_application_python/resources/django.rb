@@ -248,7 +248,7 @@ module PoiseApplicationPython
           new_resource.app_state_environment[:DJANGO_SETTINGS_MODULE] = new_resource.settings_module if new_resource.settings_module
           new_resource.app_state_environment[:DATABASE_URL] = new_resource.database[:URL] if new_resource.database[:URL]
           # Set the app module.
-          new_resource.app_state[:python_app_module] = new_resource.wsgi_module if new_resource.wsgi_module
+          new_resource.app_state[:python_wsgi_module] = new_resource.wsgi_module if new_resource.wsgi_module
         end
 
         # Create the database using the older syncdb command.

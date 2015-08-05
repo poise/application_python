@@ -58,7 +58,7 @@ module PoiseApplicationPython
         # @return [String]
         def default_app_module
           # If set in app_state, use that.
-          return app_state[:python_app_module] if app_state[:python_app_module]
+          return app_state[:python_wsgi_module] if app_state[:python_wsgi_module]
           files = Dir.entries(path)
           # Try to find a known filename.
           candidate_file = %w{wsgi.py main.py app.py application.py}.find {|file| files.include?(file) }

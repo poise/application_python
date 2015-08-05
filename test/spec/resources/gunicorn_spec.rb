@@ -29,7 +29,7 @@ describe PoiseApplicationPython::Resources::Gunicorn do
       subject { test_resource.send(:default_app_module) }
 
       context 'with an app_state key' do
-        let(:app_state) { {python_app_module: 'django'} }
+        let(:app_state) { {python_wsgi_module: 'django'} }
         it { is_expected.to eq 'django' }
       end # /context with an app_state key
 
