@@ -19,9 +19,8 @@ require 'shellwords'
 require 'chef/provider'
 require 'chef/resource'
 require 'poise'
-require 'poise_application/service_mixin'
 
-require 'poise_application_python/app_mixin'
+require 'poise_application_python/service_mixin'
 
 
 module PoiseApplicationPython
@@ -30,11 +29,9 @@ module PoiseApplicationPython
     # @since 4.0.0
     module Gunicorn
       class Resource < Chef::Resource
-        include PoiseApplication::ServiceMixin
-        include PoiseApplicationPython::AppMixin
+        include PoiseApplicationPython::ServiceMixin
         provides(:application_gunicorn)
 
-        attribute(:path, kind_of: String, name_attribute: true)
         attribute(:app_module, kind_of: String, default: lazy { default_app_module })
         attribute(:bind, kind_of: [String, Array], default: '0.0.0.0:80')
         attribute(:config, kind_of: [String, NilClass])
@@ -74,8 +71,7 @@ module PoiseApplicationPython
       end
 
       class Provider < Chef::Provider
-        include PoiseApplication::ServiceMixin
-        include PoiseApplicationPython::AppMixin
+        include PoiseApplicationPython::ServiceMixin
         provides(:application_gunicorn)
 
         def action_enable
@@ -122,7 +118,6 @@ module PoiseApplicationPython
         def service_options(resource)
           super
           resource.command("#{new_resource.python} -m gunicorn.app.wsgiapp #{gunicorn_command_options.join(' ')} #{new_resource.app_module}")
-          resource.environment.update(new_resource.parent_python.python_environment) if new_resource.parent_python
         end
 
       end
