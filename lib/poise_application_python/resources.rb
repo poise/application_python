@@ -14,7 +14,9 @@
 # limitations under the License.
 #
 
+require 'poise_application_python/resources/celery_beat'
 require 'poise_application_python/resources/celery_config'
+require 'poise_application_python/resources/celery_worker'
 require 'poise_application_python/resources/django'
 require 'poise_application_python/resources/gunicorn'
 require 'poise_application_python/resources/pip_requirements'
