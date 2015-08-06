@@ -71,6 +71,10 @@ module PoiseApplicationPython
         #   Application base path.
         #   @return [String]
         attribute(:path, kind_of: String, name_attribute: true)
+        # @!attribute allowed_hosts
+        #   Value for `ALLOWED_HOSTS` in the Django settings.
+        #   @return [String, Array<String>]
+        attribute(:allowed_hosts, kind_of: [String, Array], default: lazy { [] })
         # @!attribute collectstatic
         #   Set to false to disable running manage.py collectstatic during
         #   deployment.
@@ -116,6 +120,11 @@ module PoiseApplicationPython
         #   to {#path}.
         #   @return [String]
         attribute(:manage_path, kind_of: String, default: lazy { default_manage_path })
+        # @!attribute secret_key
+        #   Value for `SECRET_KEY` in the Django settings. If unset, not key is
+        #   added to the local settings.
+        #   @return [String, false]
+        attribute(:secret_key, kind_of: [String, FalseClass])
         # @!attribute settings_module
         #   Django settings module in dotted notation. Set to false to disable
         #   anything related to settings. Defaults to scanning for the nearest
@@ -138,7 +147,7 @@ module PoiseApplicationPython
 
         def default_local_settings_options
           {}.tap do |options|
-            options[:debug] = debug
+            options[:allowed_hosts] = Array(allowed_hosts)
             options[:databases] = {}
             options[:databases]['default'] = database.inject({}) do |memo, (key, value)|
               key = key.to_s.upcase
@@ -147,6 +156,8 @@ module PoiseApplicationPython
               memo[key] = value
               memo
             end
+            options[:debug] = debug
+            options[:secret_key] = secret_key
           end
         end
 
