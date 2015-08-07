@@ -265,6 +265,13 @@ application deployment path.
 
 All actions and properties are the same as the [`python_virtualenv` resource](https://github.com/poise/poise-python#python_virtualenv).
 
+## Examples
+
+Some test recipes are available as examples for common application frameworks:
+
+* [Flask](https://github.com/poise/application_python/blob/master/test/cookbooks/application_python_test/recipes/flask.rb)
+* [Django](https://github.com/poise/application_python/blob/master/test/cookbooks/application_python_test/recipes/django.rb)
+
 ## Sponsors
 
 Development sponsored by [Chef Software](https://www.chef.io/), [Symonds & Son](http://symondsandson.com/), and [Orion](https://www.orionlabs.co/).
