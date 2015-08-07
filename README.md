@@ -20,6 +20,7 @@ application '/srv/myapp' do
   pip_requirements
   django do
     database 'sqlite:///test_django.db'
+    secret_key 'd78fe08df56c9'
     migrate true
   end
   gunicorn do
@@ -58,7 +59,10 @@ end
 
 #### Properties
 
+* `path` – Base path for the application. *(name attribute)*
 * `app_module` – Celery application module. *(default: auto-detect)*
+* `service_name` – Name of the service to create. *(default: auto-detect)*
+# `user` – User to run the service as. *(default: application owner)*
 
 ### `application_celery_config`
 
@@ -108,7 +112,10 @@ end
 
 #### Properties
 
+* `path` – Base path for the application. *(name attribute)*
 * `app_module` – Celery application module. *(default: auto-detect)*
+* `service_name` – Name of the service to create. *(default: auto-detect)*
+# `user` – User to run the service as. *(default: application owner)*
 
 ### `application_django`
 
@@ -221,6 +228,8 @@ end
 * `config` – Path to a Guncorn configuration file.
 * `preload_app` – Enable code preloading. *(default: false)*
 * `port` – Port to listen on. Alias for `bind("0.0.0.0:#{port}")`.
+* `service_name` – Name of the service to create. *(default: auto-detect)*
+# `user` – User to run the service as. *(default: application owner)*
 * `version` – Version of Gunicorn to install. If set to true, use the latest
   version. If set to false, do not install Gunicorn. *(default: true)*
 
