@@ -67,10 +67,6 @@ module PoiseApplicationPython
         provides(:application_django)
         actions(:deploy)
 
-        # @!attribute path
-        #   Application base path.
-        #   @return [String]
-        attribute(:path, kind_of: String, name_attribute: true)
         # @!attribute allowed_hosts
         #   Value for `ALLOWED_HOSTS` in the Django settings.
         #   @return [String, Array<String>]
@@ -121,7 +117,7 @@ module PoiseApplicationPython
         #   @return [String]
         attribute(:manage_path, kind_of: String, default: lazy { default_manage_path })
         # @!attribute secret_key
-        #   Value for `SECRET_KEY` in the Django settings. If unset, not key is
+        #   Value for `SECRET_KEY` in the Django settings. If unset, no key is
         #   added to the local settings.
         #   @return [String, false]
         attribute(:secret_key, kind_of: [String, FalseClass])

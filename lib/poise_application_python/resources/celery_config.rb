@@ -41,7 +41,9 @@ module PoiseApplicationPython
       #     git '...'
       #     pip_requirements
       #     celery_config do
-      #       broker_url '...'
+      #       options do
+      #         broker_url '...'
+      #       end
       #     end
       #     celeryd
       #   end

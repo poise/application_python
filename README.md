@@ -7,7 +7,263 @@
 [![Gemnasium](https://img.shields.io/gemnasium/poise/application_python.svg)](https://gemnasium.com/poise/application_python)
 [![License](https://img.shields.io/badge/license-Apache_2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-More info coming soon!
+A [Chef](https://www.chef.io/) cookbook to deploy Python applications.
+
+## Quick Start
+
+To deploy a Django application from git:
+
+```ruby
+application '/srv/myapp' do
+  git 'https://github.com/example/myapp.git'
+  virtualenv
+  pip_requirements
+  django do
+    database 'sqlite:///test_django.db'
+    migrate true
+  end
+  gunicorn do
+    port 8000
+  end
+end
+```
+
+## Requirements
+
+Chef 12 or newer is required.
+
+## Resources
+
+### `application_celery_worker`
+
+The `application_celery_beat` resource creates a service for the `celery beat`
+process.
+
+```ruby
+application '/srv/myapp' do
+  celery_beat do
+    app_module 'myapp.tasks'
+  end
+end
+```
+
+#### Actions
+
+* `:enable` – Create, enable and start the service. *(default)*
+* `:disable` – Stop, disable, and destroy the service.
+* `:start` – Start the service.
+* `:stop` – Stop the service.
+* `:restart` – Stop and then start the service.
+* `:reload` – Send the configured reload signal to the service.
+
+#### Properties
+
+* `app_module` – Celery application module. *(default: auto-detect)*
+
+### `application_celery_config`
+
+The `application_celery_config` creates a `celeryconfig.py` configuration file.
+
+```ruby
+application '/srv/myapp' do
+  celery_config do
+    options do
+      broker_url 'amqp://'
+    end
+  end
+end
+```
+
+#### Actions
+
+* `:deploy` – Create the configuration file. *(default)*
+
+#### Properties
+
+* `path` – Path to write the configuration file to. If given as a directory,
+  create `path/celeryconfig.py`. *(name attribute)*
+* `options` – Hash or block of options to set in the configuration file.
+
+### `application_celery_worker`
+
+The `application_celery_worker` resource creates a service for the
+`celery worker` process.
+
+```ruby
+application '/srv/myapp' do
+  celery_worker do
+    app_module 'myapp.tasks'
+  end
+end
+```
+
+#### Actions
+
+* `:enable` – Create, enable and start the service. *(default)*
+* `:disable` – Stop, disable, and destroy the service.
+* `:start` – Start the service.
+* `:stop` – Stop the service.
+* `:restart` – Stop and then start the service.
+* `:reload` – Send the configured reload signal to the service.
+
+#### Properties
+
+* `app_module` – Celery application module. *(default: auto-detect)*
+
+### `application_django`
+
+The `application_django` resource creates configuration files and runs commands
+for a Django application deployment.
+
+```ruby
+application '/srv/myapp' do
+  django do
+    database 'sqlite:///test_django.db'
+    migrate true
+  end
+end
+```
+
+#### Actions
+
+* `:deploy` – Create config files and run required deployments steps. *(default)*
+
+#### Properties
+
+* `path` – Base path for the application. *(name attribute)*
+* `allowed_hosts` – Value for `ALLOWED_HOSTS` in the Django settings.
+  *(default: [])*
+* `collectstatic` – Run `manage.py collectstatic` during deployment.
+  *(default: true)*
+* `database` – Database settings for the default connection. See [the database
+  section below](#database-parameters) for more information. *(option collector)*
+* `debug` – Enable debug mode for Django. *(default: false)*
+* `local_settings_path` – Path to write local settings to. If given as a
+  relative path, will be expanded against path. Set to false to disable writing
+  local settings. *(default: local_settings.py next to settings_module)*
+* `migrate` – Run `manage.py migrate` during deployment. *(default: false)*
+* `manage_path` – Path to `manage.py`. *(default: auto-detect)*
+* `secret_key` – Value for `SECRET_KEY` in the Django settings. If unset, no
+  key is added to the local settings.
+* `settings_module` – Django settings module in dotted notation.
+  *(default: auto-detect)*
+* `syncdb` – Run `manage.py syncdb` during deployment. *(default: false)*
+* `wsgi_module` – WSGI application module in dotted notation.
+  *(default: auto-detect)*
+
+#### Database Parameters
+
+The database parameters can be set in three ways: URL, hash, and block.
+
+If you have a single URL for the parameters, you can pass it directly to
+`database`:
+
+```ruby
+django do
+  database 'postgres://myuser@dbhost/myapp'
+end
+```
+
+Passing a single URL will also set the `$DATABASE_URL` environment variable
+automatically for compatibility with Heroku-based applications.
+
+As with other option collector resources, you can pass individual settings as
+either a hash or block:
+
+```ruby
+django do
+  database do
+    engine 'postgres'
+    user 'myuser'
+    host 'dbhost'
+    name 'myapp'
+  end
+end
+
+django do
+  database({
+    engine: 'postgres',
+    user: 'myuser',
+    host: 'dbhost',
+    name: 'myapp',
+  })
+end
+```
+
+### `application_gunicorn`
+
+The `application_gunicorn` resource creates a service for the
+[Gunicorn](http://gunicorn.org/) application server.
+
+```ruby
+application '/srv/myapp' do
+  gunicorn do
+    port 8000
+    preload_app true
+  end
+end
+```
+
+#### Actions
+
+* `:enable` – Create, enable and start the service. *(default)*
+* `:disable` – Stop, disable, and destroy the service.
+* `:start` – Start the service.
+* `:stop` – Stop the service.
+* `:restart` – Stop and then start the service.
+* `:reload` – Send the configured reload signal to the service.
+
+#### Properties
+
+* `path` – Base path for the application. *(name attribute)*
+* `app_module` – WSGI module to run as an application. *(default: auto-detect)*
+* `bind` – One or more addresses/ports to bind to.
+* `config` – Path to a Guncorn configuration file.
+* `preload_app` – Enable code preloading. *(default: false)*
+* `port` – Port to listen on. Alias for `bind("0.0.0.0:#{port}")`.
+* `version` – Version of Gunicorn to install. If set to true, use the latest
+  version. If set to false, do not install Gunicorn. *(default: true)*
+
+### `application_pip_requirements`
+
+The `application_pip_requirements` resource installs Python packages based on a
+`requirements.txt` file.
+
+```ruby
+application '/srv/myapp' do
+  pip_requirements
+end
+```
+
+All actions and properties are the same as the [`pip_requirements` resource](https://github.com/poise/poise-python#pip_requirements).
+
+### `application_python`
+
+The `application_python` resource installs a Python runtime for the deployment.
+
+```ruby
+application '/srv/myapp' do
+  python '2.7'
+end
+```
+
+All actions and properties are the same as the [`python_runtime` resource](https://github.com/poise/poise-python#python_runtime).
+
+### `application_virtualenv`
+
+The `application_virtualenv` resource creates a Python virtualenv for the
+deployment.
+
+```ruby
+application '/srv/myapp' do
+  virtualenv
+end
+```
+
+If no path property is given, the default is to create a `.env/` inside the
+application deployment path.
+
+All actions and properties are the same as the [`python_virtualenv` resource](https://github.com/poise/poise-python#python_virtualenv).
 
 ## Sponsors
 

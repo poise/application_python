@@ -66,6 +66,7 @@ module PoiseApplicationPython
         #
         # @return [String]
         def default_path
+          # @todo This should handle relative paths as a name.
           ::File.join(name, '.virtualenv')
         end
 

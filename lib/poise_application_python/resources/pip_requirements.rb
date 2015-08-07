@@ -39,6 +39,8 @@ module PoiseApplicationPython
         include PoiseApplicationPython::AppMixin
         provides(:application_pip_requirements)
         subclass_providers!
+
+        # @todo This should handle relative paths against parent.path.
       end
     end
   end
