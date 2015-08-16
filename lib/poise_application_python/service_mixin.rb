@@ -38,9 +38,16 @@ module PoiseApplicationPython
       include PoiseApplication::ServiceMixin::Provider
       include PoiseApplicationPython::AppMixin::Provider
 
-      # Include the Python environment variables
+      # Set up the service for running Python stuff.
       def service_options(resource)
         super
+        # Closure scoping for #python_command below.
+        self_ = self
+        # Create a new singleton method that fills in Python for you.
+        resource.define_singleton_method(:python_command) do |val|
+          resource.command("#{self_.new_resource.python} #{val}")
+        end
+        # Include env vars as needed.
         resource.environment.update(new_resource.parent_python.python_environment) if new_resource.parent_python
       end
 
