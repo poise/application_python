@@ -15,6 +15,7 @@
 #
 
 require 'chef/mash'
+require 'poise/backports'
 require 'poise/utils'
 require 'poise_application/app_mixin'
 require 'poise_python/python_command_mixin'
@@ -30,9 +31,10 @@ module PoiseApplicationPython
 
       parent_attribute(:python, type: :python_runtime, optional: true, default: lazy { app_state_python.equal?(self) ? nil : app_state_python })
 
-      def app_state_python(*args)
-        unless args.empty?
-          app_state[:python] = args.first
+      # @attribute app_state_python
+      def app_state_python(python=Poise::NOT_PASSED)
+        unless python == Poise::NOT_PASSED
+          app_state[:python] = python
         end
         app_state[:python]
       end
