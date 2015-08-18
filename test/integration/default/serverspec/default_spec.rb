@@ -18,3 +18,31 @@ require 'net/http'
 
 require 'serverspec'
 set :backend, :exec
+
+describe 'wsgi1' do
+  describe port(8000) do
+    it { is_expected.to be_listening }
+  end
+
+  let(:http) { Net::HTTP.new('localhost', 8000) }
+
+  describe '/' do
+    subject { http.get('/') }
+    its(:code) { is_expected.to eq '200' }
+    its(:body) { is_expected.to eq "Hello world!\n" }
+  end
+end
+
+describe 'wsgi1b' do
+  describe port(8001) do
+    it { is_expected.to be_listening }
+  end
+
+  let(:http) { Net::HTTP.new('localhost', 8001) }
+
+  describe '/' do
+    subject { http.get('/') }
+    its(:code) { is_expected.to eq '200' }
+    its(:body) { is_expected.to eq "Hello world!\n" }
+  end
+end

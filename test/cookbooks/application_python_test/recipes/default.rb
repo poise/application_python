@@ -16,3 +16,24 @@
 
 # For netstat in serverspec.
 package 'net-tools'
+
+application '/opt/wsgi1' do
+  file '/opt/wsgi1/main.py' do
+    content <<-EOH
+def application(environ, start_response):
+    status = '200 OK'
+    response_headers = [('Content-type', 'text/plain')]
+    start_response(status, response_headers)
+    return ['Hello world!\\n']
+EOH
+  end
+  gunicorn do
+    port 8000
+  end
+  gunicorn 'wsgi1b' do
+    path parent.path
+    service_name 'wsgi1b'
+    app_module 'main'
+    port 8001
+  end
+end
