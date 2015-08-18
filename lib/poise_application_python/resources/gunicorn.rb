@@ -32,7 +32,7 @@ module PoiseApplicationPython
         include PoiseApplicationPython::ServiceMixin
         provides(:application_gunicorn)
 
-        attribute(:app_module, kind_of: String, default: lazy { default_app_module })
+        attribute(:app_module, kind_of: [String, NilClass], default: lazy { default_app_module })
         attribute(:bind, kind_of: [String, Array], default: '0.0.0.0:80')
         attribute(:config, kind_of: [String, NilClass])
         attribute(:preload_app, equal_to: [true, false], default: false)
@@ -56,7 +56,7 @@ module PoiseApplicationPython
         def default_app_module
           # If set in app_state, use that.
           return app_state[:python_wsgi_module] if app_state[:python_wsgi_module]
-          files = Dir.entries(path)
+          files = Dir.exist?(path) ? Dir.entries(path) : []
           # Try to find a known filename.
           candidate_file = %w{wsgi.py main.py app.py application.py}.find {|file| files.include?(file) }
           # Try the first Python file. Do I really want this?
@@ -64,7 +64,7 @@ module PoiseApplicationPython
           if candidate_file
             ::File.basename(candidate_file, '.py')
           else
-            raise PoiseApplicationPython::Error.new("Unable to determine app module for #{self}")
+            nil
           end
         end
 
@@ -117,6 +117,7 @@ module PoiseApplicationPython
         # (see PoiseApplication::ServiceMixin#service_options)
         def service_options(resource)
           super
+          raise PoiseApplicationPython::Error.new("Unable to determine app module for #{new_resource}") unless new_resource.app_module
           resource.command("#{new_resource.python} -m gunicorn.app.wsgiapp #{gunicorn_command_options.join(' ')} #{new_resource.app_module}")
         end
 

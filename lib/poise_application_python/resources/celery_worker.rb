@@ -29,7 +29,7 @@ module PoiseApplicationPython
         include PoiseApplicationPython::ServiceMixin
         provides(:application_celery_worker)
 
-        attribute(:app_module, kind_of: String, default: lazy { default_app_module })
+        attribute(:app_module, kind_of: [String, NilClass], default: lazy { default_app_module })
 
         private
 
@@ -44,7 +44,7 @@ module PoiseApplicationPython
           # If a Django settings module is set, use everything by the last
           # dotted component of it. to_s handles nil since that won't match.
           return $1 if app_state_environment[:DJANGO_SETTINGS_MODULE].to_s =~ /^(.+?)\.[^.]+$/
-          files = Dir.entries(path)
+          files = Dir.exist?(path) ? Dir.entries(path) : []
           # Try to find a known filename.
           candidate_file = %w{tasks.py task.py celery.py main.py app.py application.py}.find {|file| files.include?(file) }
           # Try the first Python file. Do I really want this?
@@ -52,7 +52,7 @@ module PoiseApplicationPython
           if candidate_file
             ::File.basename(candidate_file, '.py')
           else
-            raise PoiseApplicationPython::Error.new("Unable to determine app module for #{self}")
+            nil
           end
         end
 
@@ -67,6 +67,7 @@ module PoiseApplicationPython
         # (see PoiseApplication::ServiceMixin#service_options)
         def service_options(resource)
           super
+          raise PoiseApplicationPython::Error.new("Unable to determine app module for #{new_resource}") unless new_resource.app_module
           resource.command("#{new_resource.python} -m celery --app=#{new_resource.app_module} worker")
         end
 
