@@ -24,6 +24,7 @@ describe PoiseApplicationPython::Resources::Gunicorn do
       let(:test_resource) { described_class.new(nil, nil) }
       before do
         allow(test_resource).to receive(:app_state).and_return(app_state)
+        allow(Dir).to receive(:exist?).and_return(!files.empty?)
         allow(Dir).to receive(:entries).and_return(files)
       end
       subject { test_resource.send(:default_app_module) }
@@ -50,7 +51,7 @@ describe PoiseApplicationPython::Resources::Gunicorn do
 
       context 'with a foo.txt' do
         let(:files) { %w{foo.txt } }
-        it { expect { subject }.to raise_error PoiseApplicationPython::Error }
+        it { is_expected.to be_nil }
       end # /context with a foo.txt
     end # /describe #default_app_module
   end # /describe PoiseApplicationPython::Resources::Gunicorn::Resource
