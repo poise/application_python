@@ -16,6 +16,7 @@
 
 require 'poise/utils'
 require 'poise_application/service_mixin'
+require 'poise_languages/utils'
 
 require 'poise_application_python/app_mixin'
 
@@ -45,7 +46,7 @@ module PoiseApplicationPython
         self_ = self
         # Create a new singleton method that fills in Python for you.
         resource.define_singleton_method(:python_command) do |val|
-          resource.command("#{self_.new_resource.python} #{val}")
+          resource.command("#{self_.new_resource.python} #{PoiseLanguages::Utils.absolute_command(val, path: self_.new_resource.app_state_environment_python['PATH'])}")
         end
         # Include env vars as needed.
         resource.environment.update(new_resource.parent_python.python_environment) if new_resource.parent_python
