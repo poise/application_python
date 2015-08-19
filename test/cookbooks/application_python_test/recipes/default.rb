@@ -14,17 +14,19 @@
 # limitations under the License.
 #
 
+include_recipe 'poise-python'
+
 # For netstat in serverspec.
 package 'net-tools'
 
 application '/opt/wsgi1' do
   file '/opt/wsgi1/main.py' do
-    content <<-EOH
+    content <<-'EOH'
 def application(environ, start_response):
     status = '200 OK'
     response_headers = [('Content-type', 'text/plain')]
     start_response(status, response_headers)
-    return ['Hello world!\\n']
+    return ['Hello world!\n']
 EOH
   end
   gunicorn do
@@ -37,3 +39,45 @@ EOH
     port 8001
   end
 end
+
+application '/opt/wsgi2' do
+  file "#{path}/main.py" do
+    content <<-'EOH'
+import sys
+def application(environ, start_response):
+    status = '200 OK'
+    response_headers = [('Content-type', 'text/plain')]
+    start_response(status, response_headers)
+    return ['\n'.join(sys.path)]
+EOH
+  end
+  gunicorn do
+    port 8002
+  end
+end
+
+application '/opt/wsgi3' do
+  file "#{path}/requirements.txt" do
+    content <<-EOH
+requests
+six
+EOH
+  end
+  virtualenv
+  pip_requirements
+  file "#{path}/main.py" do
+    content <<-'EOH'
+import sys
+import requests
+def application(environ, start_response):
+    status = '200 OK'
+    response_headers = [('Content-type', 'text/plain')]
+    start_response(status, response_headers)
+    return ['\n'.join(sys.path)]
+EOH
+  end
+  gunicorn do
+    port 8003
+  end
+end
+

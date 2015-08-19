@@ -46,3 +46,36 @@ describe 'wsgi1b' do
     its(:body) { is_expected.to eq "Hello world!\n" }
   end
 end
+
+describe 'wsgi2' do
+  describe port(8002) do
+    it { is_expected.to be_listening }
+  end
+
+  let(:http) { Net::HTTP.new('localhost', 8002) }
+
+  describe '/' do
+    subject { http.get('/') }
+    its(:code) { is_expected.to eq '200' }
+    its(:body) { is_expected.to include '/opt/wsgi2' }
+    its(:body) { is_expected.to include '/lib/python2.7' }
+    its(:body) { is_expected.to match %r'(?<!virtualenv)/lib/python2.7/(site|dist)-packages' }
+  end
+end
+
+describe 'wsgi3' do
+  describe port(8003) do
+    it { is_expected.to be_listening }
+  end
+
+  let(:http) { Net::HTTP.new('localhost', 8003) }
+
+  describe '/' do
+    subject { http.get('/') }
+    its(:code) { is_expected.to eq '200' }
+    its(:body) { is_expected.to include '/opt/wsgi3' }
+    its(:body) { is_expected.to include '/lib/python2.7' }
+    its(:body) { is_expected.to include  '/opt/wsgi3/.virtualenv/lib/python2.7' }
+    its(:body) { is_expected.to_not match %r'(?<!virtualenv)/lib/python2.7/(site|dist)-packages' }
+  end
+end
