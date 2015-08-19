@@ -59,7 +59,7 @@ describe 'wsgi2' do
     its(:code) { is_expected.to eq '200' }
     its(:body) { is_expected.to include '/opt/wsgi2' }
     its(:body) { is_expected.to include '/lib/python2.7' }
-    its(:body) { is_expected.to match %r'(?<!virtualenv)/lib/python2.7/(site|dist)-packages' }
+    its(:body) { is_expected.to match %r'/(opt/rh|usr)/.*?/lib/python2.7/(site|dist)-packages' }
   end
 end
 
@@ -76,6 +76,6 @@ describe 'wsgi3' do
     its(:body) { is_expected.to include '/opt/wsgi3' }
     its(:body) { is_expected.to include '/lib/python2.7' }
     its(:body) { is_expected.to include  '/opt/wsgi3/.virtualenv/lib/python2.7' }
-    its(:body) { is_expected.to_not match %r'(?<!virtualenv)/lib/python2.7/(site|dist)-packages' }
+    its(:body) { is_expected.to_not match %r'/(opt/rh|usr)/.*?/lib/python2.7/(site|dist)-packages' }
   end
 end
