@@ -79,6 +79,9 @@ action :before_migrate do
 end
 
 action :before_symlink do
+end
+
+action :before_restart do
 
   if new_resource.collectstatic
     cmd = new_resource.collectstatic.is_a?(String) ? new_resource.collectstatic : "collectstatic --noinput"
@@ -86,6 +89,7 @@ action :before_symlink do
       user new_resource.owner
       group new_resource.group
       cwd new_resource.release_path
+      environment new_resource.environment
     end
   end
 
@@ -98,9 +102,6 @@ action :before_symlink do
     end
   end
 
-end
-
-action :before_restart do
 end
 
 action :after_restart do
