@@ -95,11 +95,15 @@ action :before_deploy do
         command "#{::File.join(django_resource.virtualenv, "bin", "python")} manage.py #{cmd}"
         environment new_resource.environment
       else
-        command cmd
-        if new_resource.environment
-          environment new_resource.environment.merge({'CELERY_CONFIG_MODULE' => new_resource.config})
+        if new_resource.virtualenv
+          command "#{::File.join(new_resource.virtualenv, "bin", cmd)}"
         else
-          environment 'CELERY_CONFIG_MODULE' => new_resource.config
+          command cmd
+        end
+        if new_resource.environment
+          environment new_resource.environment.merge({'CELERY_CONFIG_MODULE' => new_resource.config_module})
+        else
+          environment 'CELERY_CONFIG_MODULE' => new_resource.config_module
         end
       end
       directory ::File.join(new_resource.path, "current")
