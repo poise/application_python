@@ -16,3 +16,4 @@
 
 require 'poise_boiler/spec_helper'
 require 'poise_application_python'
+require 'poise_application/cheftie'
