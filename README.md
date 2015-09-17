@@ -35,7 +35,7 @@ Chef 12 or newer is required.
 
 ## Resources
 
-### `application_celery_worker`
+### `application_celery_beat`
 
 The `application_celery_beat` resource creates a service for the `celery beat`
 process.
