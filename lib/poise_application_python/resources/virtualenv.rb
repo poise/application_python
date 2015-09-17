@@ -27,8 +27,8 @@ module PoiseApplicationPython
       # An `application_virtualenv` resource to manage Python virtual
       # environments inside an Application cookbook deployment.
       #
-      # @provides application_python_virtualenv
       # @provides application_virtualenv
+      # @provides application_python_virtualenv
       # @action create
       # @action delete
       # @example
@@ -38,8 +38,7 @@ module PoiseApplicationPython
       class Resource < PoisePython::Resources::PythonVirtualenv::Resource
         include PoiseApplicationPython::AppMixin
         provides(:application_virtualenv)
-        # Need the double python for application resource rewriting.
-        provides(:application_python_python_virtualenv)
+        provides(:application_python_virtualenv)
         container_default(false)
         subclass_providers!
 
