@@ -28,7 +28,6 @@ module PoiseApplicationPython
       # Application cookbook deployment.
       #
       # @provides application_python_execute
-      # @provides application_python_python_execute
       # @action run
       # @example
       #   application '/srv/myapp' do
@@ -37,7 +36,6 @@ module PoiseApplicationPython
       class Resource < PoisePython::Resources::PythonExecute::Resource
         include PoiseApplicationPython::AppMixin
         provides(:application_python_execute)
-        provides(:application_python_python_execute)
 
         def initialize(*args)
           super
@@ -67,10 +65,8 @@ module PoiseApplicationPython
       #
       # @see Resource
       # @provides application_python_execute
-      # @provides application_python_python_execute
       class Provider < PoisePython::Resources::PythonExecute::Provider
         provides(:application_python_execute)
-        provides(:application_python_python_execute)
 
         private
 

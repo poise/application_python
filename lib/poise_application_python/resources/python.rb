@@ -28,7 +28,7 @@ module PoiseApplicationPython
       # inside an Application cookbook deployment.
       #
       # @provides application_python
-      # @provides application_python_python_runtime
+      # @provides application_python_runtime
       # @action install
       # @action uninstall
       # @example
@@ -38,8 +38,7 @@ module PoiseApplicationPython
       class Resource < PoisePython::Resources::PythonRuntime::Resource
         include PoiseApplicationPython::AppMixin
         provides(:application_python)
-        # Need the double python for application resource rewriting.
-        provides(:application_python_python_runtime)
+        provides(:application_python_runtime)
         container_default(false)
         subclass_providers!
 

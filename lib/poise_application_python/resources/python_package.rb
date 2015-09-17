@@ -28,7 +28,6 @@ module PoiseApplicationPython
       # packages inside an Application cookbook deployment.
       #
       # @provides application_python_package
-      # @provides application_python_python_package
       # @action install
       # @action upgrade
       # @action remove
@@ -39,7 +38,6 @@ module PoiseApplicationPython
       class Resource < PoisePython::Resources::PythonPackage::Resource
         include PoiseApplicationPython::AppMixin
         provides(:application_python_package)
-        provides(:application_python_python_package)
         subclass_providers!
 
         def initialize(*args)
