@@ -169,11 +169,21 @@ module PoiseApplicationPython
         end
 
         def default_settings_module
-          PoisePython::Utils.path_to_module(find_file('settings.py'), path)
+          settings_path = find_file('settings.py')
+          if settings_path
+            PoisePython::Utils.path_to_module(settings_path, path)
+          else
+            nil
+          end
         end
 
         def default_wsgi_module
-          PoisePython::Utils.path_to_module(find_file('wsgi.py'), path)
+          wsgi_path = find_file('wsgi.py')
+          if wsgi_path
+            PoisePython::Utils.path_to_module(wsgi_path, path)
+          else
+            nil
+          end
         end
 
         # Format a URL for DATABASES.
@@ -205,8 +215,6 @@ module PoiseApplicationPython
               cmp = a <=> b
             end
             cmp
-          end.tap do |p|
-            raise PoiseApplicationPython::Error.new("Unable to find a file matching #{name}") unless p
           end
         end
 
@@ -288,6 +296,7 @@ module PoiseApplicationPython
 
         # Run a manage.py command using `python_execute`.
         def manage_py_execute(*cmd)
+          raise PoiseApplicationPython::Error.new("Unable to find a find a manage.py for #{new_resource}, please set manage_path") unless new_resource.manage_path
           python_execute "manage.py #{cmd.join(' ')}" do
             python_from_parent new_resource
             command [new_resource.manage_path] + cmd
