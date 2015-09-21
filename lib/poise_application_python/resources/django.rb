@@ -240,10 +240,10 @@ module PoiseApplicationPython
         def action_deploy
           set_state
           notifying_block do
+            write_config
             run_syncdb
             run_migrate
             run_collectstatic
-            write_config
           end
         end
 
