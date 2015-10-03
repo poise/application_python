@@ -214,8 +214,15 @@ module PoiseApplicationPython
         # @param name [String] Filename to search for.
         # @return [String, nil]
         def find_file(name)
+          num_separators = lambda do |path|
+            if ::File::ALT_SEPARATOR && path.include?(::File::ALT_SEPARATOR)
+              path.count(::File::ALT_SEPARATOR)
+            else
+              path.count(::File::SEPARATOR)
+            end
+          end
           Dir[::File.join(path, '**', name)].min do |a, b|
-            cmp = a.count(::File::ALT_SEPARATOR || ::File::SEPARATOR) <=> b.count(::File::ALT_SEPARATOR || ::File::SEPARATOR)
+            cmp = num_separators.call(a) <=> num_separators.call(b)
             if cmp == 0
               cmp = a <=> b
             end
