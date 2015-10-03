@@ -210,7 +210,7 @@ module PoiseApplicationPython
 
         def find_file(name)
           Dir[::File.join(path, '**', name)].min do |a, b|
-            cmp = a.count(::File::SEPARATOR) <=> b.count(::File::SEPARATOR)
+            cmp = a.count(::File::ALT_SEPARATOR || ::File::SEPARATOR) <=> b.count(::File::ALT_SEPARATOR || ::File::SEPARATOR)
             if cmp == 0
               cmp = a <=> b
             end
