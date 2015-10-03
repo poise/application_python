@@ -208,6 +208,11 @@ module PoiseApplicationPython
           end
         end
 
+        # Search for a file somewhere under the application path. Prefers files
+        # closer to the root, then sort alphabetically for stability.
+        #
+        # @param name [String] Filename to search for.
+        # @return [String, nil]
         def find_file(name)
           Dir[::File.join(path, '**', name)].min do |a, b|
             cmp = a.count(::File::ALT_SEPARATOR || ::File::SEPARATOR) <=> b.count(::File::ALT_SEPARATOR || ::File::SEPARATOR)
