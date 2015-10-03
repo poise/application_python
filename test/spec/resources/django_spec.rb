@@ -135,5 +135,41 @@ SECRET_KEY = "swordfish"
 SETTINGS
       end # /context with a secret key
     end # /describe #local_settings
+
+    describe '#find_file' do
+      let(:files) { [] }
+      recipe(subject: false) do
+        application_django '/test'
+      end
+      subject { chef_run.application_django('/test').send(:find_file, 'myfile.py') }
+      before do
+        allow(Dir).to receive(:[]).and_call_original
+        allow(Dir).to receive(:[]).with('/test/**/myfile.py').and_return(files)
+      end
+
+      context 'with no matching files' do
+        it { is_expected.to be_nil }
+      end # /context with no matching files
+
+      context 'with one matching file' do
+        let(:files) { %w{/test/myfile.py} }
+        it { is_expected.to eq '/test/myfile.py' }
+      end # /context with one matching file
+
+      context 'with two matching files' do
+        let(:files) { %w{/test/myfile.py /test/sub/myfile.py} }
+        it { is_expected.to eq '/test/myfile.py' }
+      end # /context with two matching files
+
+      context 'with two matching files in a different order' do
+        let(:files) { %w{/test/sub/myfile.py /test/myfile.py} }
+        it { is_expected.to eq '/test/myfile.py' }
+      end # /context with two matching files in a different order
+
+      context 'with two matching files on the same level' do
+        let(:files) { %w{/test/b/myfile.py /test/a/myfile.py} }
+        it { is_expected.to eq '/test/a/myfile.py' }
+      end # /context with two matching files on the same level
+    end # /describe #find_file
   end # /describe PoiseApplicationPython::Resources::Django::Resource
 end
