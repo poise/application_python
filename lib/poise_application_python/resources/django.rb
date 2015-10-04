@@ -216,7 +216,9 @@ module PoiseApplicationPython
         def find_file(name)
           num_separators = lambda do |path|
             if ::File::ALT_SEPARATOR && path.include?(::File::ALT_SEPARATOR)
+              # :nocov:
               path.count(::File::ALT_SEPARATOR)
+              # :nocov:
             else
               path.count(::File::SEPARATOR)
             end
