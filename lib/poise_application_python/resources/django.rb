@@ -94,6 +94,10 @@ module PoiseApplicationPython
         #     If you use this in production you will get everything you deserve.
         #   @return [Boolean]
         attribute(:debug, equal_to: [true, false], default: false)
+        # @!attribute group
+        #   Owner for the Django application, defaults to application group.
+        #   @return [String]
+        attribute(:group, kind_of: String, default: lazy { parent && parent.group })
         # @!attribute local_settings
         #   Template content attribute for the contents of local_settings.py.
         #   @todo Redo this doc to cover the actual attributes created.
@@ -116,6 +120,10 @@ module PoiseApplicationPython
         #   to {#path}.
         #   @return [String]
         attribute(:manage_path, kind_of: String, default: lazy { default_manage_path })
+        # @!attribute owner
+        #   Owner for the Django application, defaults to application owner.
+        #   @return [String]
+        attribute(:owner, kind_of: String, default: lazy { parent && parent.owner })
         # @!attribute secret_key
         #   Value for `SECRET_KEY` in the Django settings. If unset, no key is
         #   added to the local settings.

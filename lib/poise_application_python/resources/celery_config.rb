@@ -53,6 +53,14 @@ module PoiseApplicationPython
         actions(:deploy)
 
         attribute('', template: true, default_source: 'celeryconfig.py.erb')
+        # @!attribute group
+        #   Owner for the Django application, defaults to application group.
+        #   @return [String]
+        attribute(:group, kind_of: String, default: lazy { parent && parent.group })
+        # @!attribute owner
+        #   Owner for the Django application, defaults to application owner.
+        #   @return [String]
+        attribute(:owner, kind_of: String, default: lazy { parent && parent.owner })
         attribute(:path, kind_of: String, default: lazy { default_path })
 
         private
@@ -90,8 +98,8 @@ module PoiseApplicationPython
           file new_resource.path do
             content new_resource.content
             mode '640'
-            owner new_resource.parent.owner if new_resource.parent
-            group new_resource.parent.group if new_resource.parent
+            owner new_resource.owner
+            group new_resource.group
           end
         end
 
