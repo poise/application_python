@@ -333,7 +333,7 @@ module PoiseApplicationPython
           raise PoiseApplicationPython::Error.new("Unable to find a find a manage.py for #{new_resource}, please set manage_path") unless new_resource.manage_path
           python_execute "manage.py #{cmd.join(' ')}" do
             python_from_parent new_resource
-            command [new_resource.manage_path] + cmd
+            command [::File.expand_path(new_resource.manage_path, new_resource.path)] + cmd
             cwd new_resource.path
             environment new_resource.app_state_environment
             group new_resource.parent.group
