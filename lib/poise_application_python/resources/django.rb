@@ -141,6 +141,10 @@ module PoiseApplicationPython
 
         private
 
+        # Default value for {#local_settings_options}. Adds Django settings data
+        # from the resource to be rendered in the local settings template.
+        #
+        # @return [Hash]
         def default_local_settings_options
           {}.tap do |options|
             options[:allowed_hosts] = Array(allowed_hosts)
@@ -157,6 +161,10 @@ module PoiseApplicationPython
           end
         end
 
+        # Default value for {#local_settings_path}, local_settings.py next to
+        # the configured {#settings_module}.
+        #
+        # @return [String, nil]
         def default_local_settings_path
           # If no settings module, no default local settings.
           return unless settings_module
@@ -164,10 +172,18 @@ module PoiseApplicationPython
           ::File.expand_path(::File.join('..', 'local_settings.py'), settings_path)
         end
 
+        # Default value for {#manage_path}, searches for manage.py in the
+        # application path.
+        #
+        # @return [String, nil]
         def default_manage_path
           find_file('manage.py')
         end
 
+        # Default value for {#settings_module}, searches for settings.py in the
+        # application path.
+        #
+        # @return [String, nil]
         def default_settings_module
           settings_path = find_file('settings.py')
           if settings_path
@@ -177,6 +193,10 @@ module PoiseApplicationPython
           end
         end
 
+        # Default value for {#wsgi_module}, searchs for wsgi.py in the
+        # application path.
+        #
+        # @return [String, nil]
         def default_wsgi_module
           wsgi_path = find_file('wsgi.py')
           if wsgi_path
