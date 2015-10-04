@@ -323,8 +323,8 @@ module PoiseApplicationPython
           file new_resource.local_settings_path do
             content new_resource.local_settings_content
             mode '640'
-            owner new_resource.parent.owner
-            group new_resource.parent.group
+            owner new_resource.owner
+            group new_resource.group
           end
         end
 
@@ -336,8 +336,8 @@ module PoiseApplicationPython
             command [::File.expand_path(new_resource.manage_path, new_resource.path)] + cmd
             cwd new_resource.path
             environment new_resource.app_state_environment
-            group new_resource.parent.group
-            user new_resource.parent.owner
+            group new_resource.group
+            user new_resource.owner
           end
         end
 
