@@ -145,6 +145,8 @@ end
 * `database` – Database settings for the default connection. See [the database
   section below](#database-parameters) for more information. *(option collector)*
 * `debug` – Enable debug mode for Django. *(default: false)*
+* `local_settings` – A [Poise template property](https://github.com/poise/poise#template-content)
+  for the content of the local settings configuration file.
 * `local_settings_path` – Path to write local settings to. If given as a
   relative path, will be expanded against path. Set to false to disable writing
   local settings. *(default: local_settings.py next to settings_module)*
