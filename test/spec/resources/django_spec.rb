@@ -136,6 +136,42 @@ SETTINGS
       end # /context with a secret key
     end # /describe #local_settings
 
+    describe '#default_local_settings_path' do
+      subject { chef_run.application_django('/test').send(:default_local_settings_path) }
+
+      context 'with no settings.py' do
+        recipe(subject: false) do
+          application_django '/test' do
+            def settings_module
+              nil
+            end
+          end
+        end
+        it { is_expected.to be_nil }
+      end # /context with no settings.py
+
+      context 'with basic settings.py' do
+        recipe(subject: false) do
+          application_django '/test' do
+            settings_module 'myapp.settings'
+          end
+        end
+        it { is_expected.to eq '/test/myapp/local_settings.py' }
+      end # /context with basic settings.py
+    end # /describe #default_local_settings_path
+
+    describe '#default_manage_path' do
+      subject { chef_run.application_django('/test').send(:default_manage_path) }
+      recipe(subject: false) do
+        application_django '/test'
+      end
+      before do
+        allow(chef_run.application_django('/test')).to receive(:find_file).with('manage.py').and_return('/test/manage.py')
+      end
+
+      it { is_expected.to eq '/test/manage.py' }
+    end # /describe #default_manage_path
+
     describe '#find_file' do
       let(:files) { [] }
       recipe(subject: false) do
