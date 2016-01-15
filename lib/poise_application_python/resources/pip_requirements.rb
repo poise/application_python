@@ -41,6 +41,16 @@ module PoiseApplicationPython
         subclass_providers!
 
         # @todo This should handle relative paths against parent.path.
+
+        # #!attribute group
+        #   Override the default group to be the app group if unspecified.
+        #   @return [String, Integer]
+        attribute(:group, kind_of: [String, Integer, NilClass], default: lazy { parent && parent.group })
+
+        # #!attribute user
+        #   Override the default user to be the app owner if unspecified.
+        #   @return [String, Integer]
+        attribute(:user, kind_of: [String, Integer, NilClass], default: lazy { parent && parent.owner })
       end
     end
   end
