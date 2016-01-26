@@ -231,7 +231,7 @@ end
 * `preload_app` – Enable code preloading. *(default: false)*
 * `port` – Port to listen on. Alias for `bind("0.0.0.0:#{port}")`.
 * `service_name` – Name of the service to create. *(default: auto-detect)*
-# `user` – User to run the service as. *(default: application owner)*
+* `user` – User to run the service as. *(default: application owner)*
 * `version` – Version of Gunicorn to install. If set to true, use the latest
   version. If set to false, do not install Gunicorn. *(default: true)*
 
