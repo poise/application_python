@@ -1,10 +1,3 @@
 ---
 #<% require 'poise_boiler' %>
-<%= PoiseBoiler.kitchen(platforms: 'linux') %>
-
-suites:
-- name: default
-  run_list:
-  - recipe[application_python_test]
-  - recipe[application_python_test::django]
-  - recipe[application_python_test::flask]
+<%= PoiseBoiler.kitchen %>

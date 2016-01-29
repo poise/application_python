@@ -81,3 +81,5 @@ EOH
   end
 end
 
+include_recipe '::django'
+include_recipe '::flask'
