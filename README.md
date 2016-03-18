@@ -308,8 +308,8 @@ All actions and properties are the same as the [`python_virtualenv` resource](ht
 
 Some test recipes are available as examples for common application frameworks:
 
-* [Flask](https://github.com/poise/application_python/blob/master/test/cookbooks/application_python_test/recipes/flask.rb)
-* [Django](https://github.com/poise/application_python/blob/master/test/cookbooks/application_python_test/recipes/django.rb)
+* [Flask](https://github.com/poise/application_python/blob/master/test/cookbook/recipes/flask.rb)
+* [Django](https://github.com/poise/application_python/blob/master/test/cookbook/recipes/django.rb)
 
 ## Sponsors
 
