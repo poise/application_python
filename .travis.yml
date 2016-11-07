@@ -1,26 +1,51 @@
 sudo: false
 cache: bundler
 language: ruby
-rvm:
-- 2.3.1
+env:
+  global:
+    - secure: rz8Ej7Zx5zArH+OwuAsRB8CH0rZVKIAm6nhB29wg73d7FrMv6cWEl5/B2uQqlefqZ1GYosAifhmoW7lVB1S2O9pDPB8wSpr2P9dsaHEupad4jBi6rIufxoCrx3YZIFPcmvL71u2+STi021VQpsXjcwfP6h2i+pVkPXxVr0Ihv3U=
+    - USE_SYSTEM_GECODE=true
+before_install: gem install bundler
+bundler_args: '--binstubs=$PWD/bin --jobs 3 --retry 3'
+script:
+  - ./bin/rake travis
+matrix:
+  include:
+    - rvm: 2.3.1
+      gemfile: test/gemfiles/chef-12.gemfile
+    - rvm: 2.1.4
+      gemfile: test/gemfiles/chef-12.1.gemfile
+    - rvm: 2.1.4
+      gemfile: test/gemfiles/chef-12.2.gemfile
+    - rvm: 2.1.4
+      gemfile: test/gemfiles/chef-12.3.gemfile
+    - rvm: 2.1.6
+      gemfile: test/gemfiles/chef-12.4.gemfile
+    - rvm: 2.1.6
+      gemfile: test/gemfiles/chef-12.5.gemfile
+    - rvm: 2.1.6
+      gemfile: test/gemfiles/chef-12.6.gemfile
+    - rvm: 2.1.6
+      gemfile: test/gemfiles/chef-12.7.gemfile
+    - rvm: 2.1.6
+      gemfile: test/gemfiles/chef-12.8.gemfile
+    - rvm: 2.1.8
+      gemfile: test/gemfiles/chef-12.9.gemfile
+    - rvm: 2.1.8
+      gemfile: test/gemfiles/chef-12.10.gemfile
+    - rvm: 2.1.8
+      gemfile: test/gemfiles/chef-12.11.gemfile
+    - rvm: 2.1.8
+      gemfile: test/gemfiles/chef-12.12.gemfile
+    - rvm: 2.1.9
+      gemfile: test/gemfiles/chef-12.13.gemfile
+    - rvm: 2.3.1
+      gemfile: test/gemfiles/chef-12.14.gemfile
+    - rvm: 2.3.1
+      gemfile: test/gemfiles/chef-12.15.gemfile
+    - rvm: 2.3.1
+      gemfile: test/gemfiles/master.gemfile
 addons:
   apt:
     packages:
-    - libgecode-dev
-env:
-  global:
-  - USE_SYSTEM_GECODE=true
-  - secure: rz8Ej7Zx5zArH+OwuAsRB8CH0rZVKIAm6nhB29wg73d7FrMv6cWEl5/B2uQqlefqZ1GYosAifhmoW7lVB1S2O9pDPB8wSpr2P9dsaHEupad4jBi6rIufxoCrx3YZIFPcmvL71u2+STi021VQpsXjcwfP6h2i+pVkPXxVr0Ihv3U=
-before_install: "gem install bundler"
-bundler_args: "--binstubs=$PWD/bin --jobs 3 --retry 3"
-script:
-- "./bin/rake travis"
-gemfile:
-- test/gemfiles/chef-12.gemfile
-- test/gemfiles/chef-12.1.gemfile
-- test/gemfiles/chef-12.2.gemfile
-- test/gemfiles/chef-12.3.gemfile
-- test/gemfiles/chef-12.4.gemfile
-- test/gemfiles/chef-12.5.gemfile
-- test/gemfiles/chef-12.6.gemfile
-- test/gemfiles/master.gemfile
+      - libgecode-dev
