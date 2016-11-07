@@ -50,7 +50,7 @@ module PoiseApplicationPython
 
         # Compute the default application module to pass to gunicorn. This
         # checks the app state and then looks for commonly used filenames.
-        # Raises an exception if no default can be found.
+        # Returns nil if no default can be found.
         #
         # @return [String]
         def default_app_module
