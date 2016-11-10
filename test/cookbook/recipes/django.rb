@@ -19,7 +19,7 @@ include_recipe 'poise-python'
 
 application '/opt/test_django' do
   git 'https://github.com/poise/test_django.git'
-  python 'pypy3'
+  python 'pypy3-5.5'
   virtualenv
   pip_requirements
   django do
