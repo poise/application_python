@@ -114,6 +114,7 @@ end
 
 * `path` – Base path for the application. *(name attribute)*
 * `app_module` – Celery application module. *(default: auto-detect)*
+* `worker_pool` – The Pool implementation used by the Celery worker (gevent,eventlet or prefork). *(default: prefork)*
 * `service_name` – Name of the service to create. *(default: auto-detect)*
 # `user` – User to run the service as. *(default: application owner)*
 
