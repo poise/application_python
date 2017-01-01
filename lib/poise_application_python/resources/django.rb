@@ -1,5 +1,5 @@
 #
-# Copyright 2015-2016, Noah Kantrowitz
+# Copyright 2015-2017, Noah Kantrowitz
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ module PoiseApplicationPython
     # @since 4.0.0
     module Django
       # Aliases for Django database engine names. Based on https://github.com/kennethreitz/dj-database-url/blob/master/dj_database_url.py
-      # Copyright 2014-2016, Kenneth Reitz.
+      # Copyright 2014-2017, Kenneth Reitz.
       ENGINE_ALIASES = {
         'postgres' => 'django.db.backends.postgresql_psycopg2',
         'postgresql' => 'django.db.backends.postgresql_psycopg2',
