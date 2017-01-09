@@ -29,6 +29,7 @@ module PoiseApplicationPython
         include PoiseApplicationPython::ServiceMixin
         provides(:application_celery_worker)
 
+        attribute(:worker_pool, kind_of: [String, NilClass], default: "prefork")
         attribute(:app_module, kind_of: [String, NilClass], default: lazy { default_app_module })
 
         private
@@ -68,7 +69,7 @@ module PoiseApplicationPython
         def service_options(resource)
           super
           raise PoiseApplicationPython::Error.new("Unable to determine app module for #{new_resource}") unless new_resource.app_module
-          resource.command("#{new_resource.python} -m celery --app=#{new_resource.app_module} worker")
+          resource.command("#{new_resource.python} -m celery --app=#{new_resource.app_module} -P #{new_resource.worker_pool} worker")
         end
 
       end
