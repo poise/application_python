@@ -17,4 +17,4 @@
 name 'application_python_test'
 depends 'application_git'
 depends 'application_python'
-depends 'build-essential'
+depends 'poise-build-essential'

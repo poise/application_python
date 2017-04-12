@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-include_recipe 'build-essential'
+include_recipe 'poise-build-essential'
 include_recipe 'poise-python'
 
 application '/opt/test_django' do
