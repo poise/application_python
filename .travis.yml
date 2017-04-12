@@ -4,15 +4,22 @@ language: ruby
 env:
   global:
     - secure: rz8Ej7Zx5zArH+OwuAsRB8CH0rZVKIAm6nhB29wg73d7FrMv6cWEl5/B2uQqlefqZ1GYosAifhmoW7lVB1S2O9pDPB8wSpr2P9dsaHEupad4jBi6rIufxoCrx3YZIFPcmvL71u2+STi021VQpsXjcwfP6h2i+pVkPXxVr0Ihv3U=
-    - USE_SYSTEM_GECODE=true
-before_install: gem install bundler
-bundler_args: '--binstubs=$PWD/bin --jobs 3 --retry 3'
+before_install:
+  - 'if [[ $BUNDLE_GEMFILE == *master.gemfile ]]; then gem update --system; fi'
+  - gem --version
+  - gem install bundler
+  - bundle --version
+  - 'bundle config --local path ${BUNDLE_PATH:-$(dirname $BUNDLE_GEMFILE)/vendor/bundle}'
+  - bundle config --local bin $PWD/bin
+install: bundle update --jobs=3 --retry=3
 script:
   - ./bin/rake travis
 matrix:
   include:
     - rvm: 2.3.1
       gemfile: test/gemfiles/chef-12.gemfile
+    - rvm: 2.4.1
+      gemfile: test/gemfiles/chef-13.gemfile
     - rvm: 2.1.4
       gemfile: test/gemfiles/chef-12.1.gemfile
     - rvm: 2.1.4
@@ -48,8 +55,10 @@ matrix:
     - rvm: 2.3.1
       gemfile: test/gemfiles/chef-12.17.gemfile
     - rvm: 2.3.1
+      gemfile: test/gemfiles/chef-12.18.gemfile
+    - rvm: 2.3.1
+      gemfile: test/gemfiles/chef-12.19.gemfile
+    - rvm: 2.4.1
+      gemfile: test/gemfiles/chef-13.0.gemfile
+    - rvm: 2.4.1
       gemfile: test/gemfiles/master.gemfile
-addons:
-  apt:
-    packages:
-      - libgecode-dev
