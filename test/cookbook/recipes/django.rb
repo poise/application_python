@@ -31,6 +31,6 @@ application '/opt/test_django' do
   end
   # PyPy is a bit slower to shut down.
   poise_service_options '/opt/test_django' do
-    restart_delay 10
+    restart_delay 30
   end
 end
