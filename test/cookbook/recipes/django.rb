@@ -29,4 +29,8 @@ application '/opt/test_django' do
   gunicorn do
     port 9000
   end
+  # PyPy is a bit slower to shut down.
+  poise_service_options '/opt/test_django' do
+    restart_delay 10
+  end
 end
