@@ -21,7 +21,7 @@ describe PoiseApplicationPython::Resources::Gunicorn do
     describe '#default_app_module' do
       let(:app_state) { {} }
       let(:files) { [] }
-      let(:test_resource) { described_class.new(nil, nil) }
+      let(:test_resource) { described_class.new('/test', nil) }
       before do
         allow(test_resource).to receive(:app_state).and_return(app_state)
         allow(Dir).to receive(:exist?).and_return(!files.empty?)
