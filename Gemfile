@@ -24,6 +24,8 @@ def dev_gem(name, path: File.join('..', name), github: nil)
     gem name, path: path
   elsif github
     gem name, github: github
+  else
+    gem name
   end
 end
 
