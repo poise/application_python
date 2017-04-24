@@ -23,7 +23,7 @@ def dev_gem(name, path: File.join('..', name), github: nil)
   if File.exist?(path)
     gem name, path: path
   elsif github
-    gem name, git: "https://gitub.com/#{github}.git"
+    gem name, git: "https://github.com/#{github}.git"
   end
 end
 
@@ -36,4 +36,4 @@ dev_gem 'poise-boiler'
 dev_gem 'poise-languages'
 dev_gem 'poise-profiler'
 dev_gem 'poise-python'
-dev_gem 'poise-service', github: 'poise/poise-service'
+dev_gem 'poise-service'
