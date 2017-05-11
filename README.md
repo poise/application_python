@@ -14,6 +14,7 @@ A [Chef](https://www.chef.io/) cookbook to deploy Python applications.
 To deploy a Django application from git:
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   git 'https://github.com/example/myapp.git'
   virtualenv
@@ -41,6 +42,7 @@ The `application_celery_beat` resource creates a service for the `celery beat`
 process.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   celery_beat do
     app_module 'myapp.tasks'
@@ -69,6 +71,7 @@ end
 The `application_celery_config` creates a `celeryconfig.py` configuration file.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   celery_config do
     options do
@@ -94,6 +97,7 @@ The `application_celery_worker` resource creates a service for the
 `celery worker` process.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   celery_worker do
     app_module 'myapp.tasks'
@@ -124,6 +128,7 @@ The `application_django` resource creates configuration files and runs commands
 for a Django application deployment.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   django do
     database 'sqlite:///test_django.db'
@@ -181,6 +186,7 @@ As with other option collector resources, you can pass individual settings as
 either a hash or block:
 
 ```ruby
+include_recipe 'poise-python'
 django do
   database do
     engine 'postgres'
@@ -206,6 +212,7 @@ The `application_gunicorn` resource creates a service for the
 [Gunicorn](http://gunicorn.org/) application server.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   gunicorn do
     port 8000
@@ -242,6 +249,7 @@ The `application_pip_requirements` resource installs Python packages based on a
 `requirements.txt` file.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   pip_requirements
 end
@@ -254,6 +262,7 @@ All actions and properties are the same as the [`pip_requirements` resource](htt
 The `application_python` resource installs a Python runtime for the deployment.
 
 ```ruby
+include_recipe 'poise-python'
 application '/srv/myapp' do
   python '2.7'
 end
