@@ -232,7 +232,7 @@ module PoiseApplicationPython
             db[:USER] = parsed.user if parsed.user && !parsed.user.empty?
             db[:PASSWORD] = parsed.password if parsed.password && !parsed.password.empty?
             db[:HOST] = parsed.host if parsed.host && !parsed.host.empty?
-            db[:PORT] = parsed.port if parsed.port && !parsed.port.empty?
+            db[:PORT] = parsed.port if parsed.port && !parsed.port.nil?
           end
         end
 
