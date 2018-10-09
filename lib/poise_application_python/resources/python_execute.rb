@@ -40,10 +40,10 @@ module PoiseApplicationPython
         def initialize(*args)
           super
           # Clear some instance variables so my defaults work.
-          remove_instance_variable(:@cwd)
-          remove_instance_variable(:@group)
-          remove_instance_variable(:@user)
-        end
+          remove_instance_variable(:@cwd) if defined?(@cwd)
+          remove_instance_variable(:@group) if defined?(@group)
+          remove_instance_variable(:@user) if defined?(@user)        
+	end
 
         # #!attribute cwd
         #   Override the default directory to be the app path if unspecified.
