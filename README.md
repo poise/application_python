@@ -116,7 +116,59 @@ end
 * `app_module` – Celery application module. *(default: auto-detect)*
 * `worker_pool` – The Pool implementation used by the Celery worker (gevent,eventlet or prefork). *(default: prefork)*
 * `service_name` – Name of the service to create. *(default: auto-detect)*
-# `user` – User to run the service as. *(default: application owner)*
+* `user` – User to run the service as. *(default: application owner)*
+
+### `application_flower_config`
+
+The `application_flower_config` creates a `flowerconfig.py` configuration file.
+
+```ruby
+application '/srv/myapp' do
+  flower_config do
+    options do
+      broker 'amqp://'
+    end
+  end
+end
+```
+
+#### Actions
+
+* `:deploy` – Create the configuration file. *(default)*
+
+#### Properties
+
+* `path` – Path to write the configuration file to. If given as a directory,
+  create `path/flowerconfig.py`. *(name attribute)*
+* `options` – Hash or block of options to set in the configuration file.
+
+### `application_flower`
+
+The `application_flower` resource creates a service for the `flower` process.
+
+```ruby
+application '/srv/myapp' do
+  flower do
+    config_file 'path/flowerconfig.py`'
+  end
+end
+```
+
+#### Actions
+
+* `:enable` – Create, enable and start the service. *(default)*
+* `:disable` – Stop, disable, and destroy the service.
+* `:start` – Start the service.
+* `:stop` – Stop the service.
+* `:restart` – Stop and then start the service.
+* `:reload` – Send the configured reload signal to the service.
+
+#### Properties
+
+* `path` – Base path for the application. *(name attribute)*
+* `config_file` – path of the configuration file to use *(default: path/flowerconfig)*
+* `service_name` – Name of the service to create. *(default: auto-detect)*
+* `user` – User to run the service as. *(default: application owner)*
 
 ### `application_django`
 

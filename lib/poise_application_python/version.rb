@@ -15,5 +15,5 @@
 #
 
 module PoiseApplicationPython
-  VERSION = '4.0.1.pre'
+  VERSION = '4.1.0'
 end
